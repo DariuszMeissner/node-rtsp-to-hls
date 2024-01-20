@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>RTSP Stream to HLS</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+
+<body>
+  <video id="video" autoplay controls>
+    <source src="hls/stream.m3u8" type="application/x-mpegURL">
+    Your browser does not support the video tag.
+  </video>
+
+  <button id="startRecordingButton">Start Recording</button>
+  <button id="stopRecordingButton">Stop Recording</button>
+
+  <script>
+    if (Hls.isSupported()) {
+      var video = document.getElementById('video');
+      var hls = new Hls();
+      hls.loadSource('/hls/stream.m3u8');
+      hls.attachMedia(video);
+    }
+
+    document.getElementById('startRecordingButton').addEventListener('click', function () {
+      fetch('/start-recording')
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+    });
+
+    document.getElementById('stopRecordingButton').addEventListener('click', function () {
+      fetch('/stop-recording')
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+    });
+
+    fetch('/start-stream').then(response => console.log('Streaming started'));
+  </script>
+</body>
+
+</html>
