@@ -67,7 +67,6 @@ function startRecording(rtspUrl) {
 
 function stopRecording() {
   if (recorderProcess) {
-    // recorderProcess.kill('SIGINT');
     recorderProcess.kill();
   }
 }
