@@ -1,0 +1,24 @@
+{
+  "name": "rtsp-to-hls",
+  "version": "1.0.0",
+  "description": "Server nodej to translate signal from rtsp to hls",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DariuszMeissner/node-rtsp-to-hls.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DariuszMeissner/node-rtsp-to-hls/issues"
+  },
+  "homepage": "https://github.com/DariuszMeissner/node-rtsp-to-hls#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "fluent-ffmpeg": "^2.1.2"
+  }
+}

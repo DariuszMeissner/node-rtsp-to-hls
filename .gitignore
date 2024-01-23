@@ -62,6 +62,11 @@ project.lock.json
 project.fragment.lock.json
 artifacts/
 
+hls
+hls/
+
+recordings/
+
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
 
