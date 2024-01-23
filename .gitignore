@@ -13,6 +13,9 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+# Environment variable
+.env
+
 # Mono auto generated files
 mono_crash.*
 
@@ -62,9 +65,11 @@ project.lock.json
 project.fragment.lock.json
 artifacts/
 
+# HLS stream conversion directory
 hls
 hls/
 
+# Recordings output directory
 recordings/
 
 # ASP.NET Scaffolding
