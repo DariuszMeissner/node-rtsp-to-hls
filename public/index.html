@@ -12,9 +12,12 @@
     Your browser does not support the video tag.
   </video>
 
-  <button id="startRecordingButton">Start Recording</button>
-  <button id="endRecordingButton">Stop Recording</button>
-  <div id="status">Recording status: OFFLINE</div>
+  <button id="startRecordingButton">Rozpocznij nagywanie</button>
+  <button id="endRecordingButton">Zakończ nagrywanie</button>
+  <div>
+    <span>Status nagrywania:&nbsp;</span>
+    <span id="status">OFF</span>
+  </div>
 
   <script>
     if (Hls.isSupported()) {
@@ -26,11 +29,11 @@
 
     document.getElementById('startRecordingButton').addEventListener('click', function () {
       fetch('/start-recording')
-        .then(response => response.text())
+        .then(response => response.json())
         .then(data => {
           console.log(data)
 
-          document.getElementById('status').innerHTML = data.isRecording && 'Recording status: START'
+          document.getElementById('status').innerHTML = data.isRecording && 'NAGRYWANIE'
 
         })
         .catch(error => console.error('Error:', error));
@@ -39,16 +42,25 @@
 
     document.getElementById('endRecordingButton').addEventListener('click', function () {
       fetch('/stop-recording')
-        .then(response => response.text())
+        .then(response => response.json())
         .then(data => {
           console.log(data)
 
-          document.getElementById('status').innerHTML = !data.isRecording && 'Recording status: END'
+          document.getElementById('status').innerHTML = !data.isRecording && 'WYŁĄCZONE'
         })
         .catch(error => console.error('Error:', error));
     });
 
+    document.addEventListener('DOMContentLoaded', () => {
+      fetch('/recording-status')
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
 
+          document.getElementById('status').innerHTML = data.isRecording ? 'NAGRYWANIE' : 'WYŁĄCZONE'
+        })
+        .catch(error => console.error('Error:', error));
+    })
   </script>
 </body>
 
