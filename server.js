@@ -2,13 +2,13 @@ const express = require('express');
 const ffmpeg = require('fluent-ffmpeg');
 const path = require('path');
 const fs = require('fs');
-const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const port = 3000;
 const outputDirectory = path.join(__dirname, 'recordings');
 let isRecording = false;
-let recorderProcessConfig = null;
+let recorderProcess = null;
+let streamProcess = null;
 
 if (!fs.existsSync(outputDirectory)) {
   fs.mkdirSync(outputDirectory, { recursive: true });
@@ -28,10 +28,6 @@ const getOutputFilePath = () => {
   const fileName = `posiedzenie-${timestamp}.mp4`;
   return path.join(outputDirectory, fileName);
 };
-
-let streamProcess = null;
-
-
 
 // Function to start converting RTSP to HLS
 function startStreamConversion() {
@@ -73,7 +69,7 @@ function startRecording() {
   isRecording = true;
 
   const outputPath = getOutputFilePath();
-  recorderProcessConfig = ffmpeg(rtspUrl)
+  recorderProcess = ffmpeg(rtspUrl)
     .output(outputPath)
     .size('640x360')
     .videoCodec('libx264')
@@ -89,13 +85,13 @@ function startRecording() {
       console.log(`Recording stopped!!!!!`);
     });
 
-  recorderProcessConfig.run();
+  recorderProcess.run();
 }
 
 function stopRecording() {
   console.log("Attempting to stop recording");
-  if (recorderProcessConfig) {
-    recorderProcessConfig.kill('SIGINT');
+  if (recorderProcess) {
+    recorderProcess.kill('SIGINT');
     console.log('Recording stopped');
     isRecording = false;
   } else {
