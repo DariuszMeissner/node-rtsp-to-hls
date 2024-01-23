@@ -2,12 +2,13 @@ const express = require('express');
 const ffmpeg = require('fluent-ffmpeg');
 const path = require('path');
 const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const port = 3000;
-let recorderProcess;
-
 const outputDirectory = path.join(__dirname, 'recordings');
+let isRecording = false;
+let recorderProcessConfig = null;
 
 if (!fs.existsSync(outputDirectory)) {
   fs.mkdirSync(outputDirectory, { recursive: true });
@@ -23,13 +24,23 @@ if (!fs.existsSync(hlsOutputDir)) {
 const rtspUrl = 'rtsp://stream:stream!@88.220.95.114:8555';
 
 const getOutputFilePath = () => {
-  const fileName = `recording-${new Date().toISOString()}.mp4`;
+  const timestamp = Date.now();
+  const fileName = `posiedzenie-${timestamp}.mp4`;
   return path.join(outputDirectory, fileName);
 };
 
+let streamProcess = null;
+
+
+
 // Function to start converting RTSP to HLS
 function startStreamConversion() {
-  ffmpeg(rtspUrl, { timeout: 432000 })
+  if (streamProcess) {
+    console.log("Stream already running.");
+    return;
+  }
+
+  streamProcess = ffmpeg(rtspUrl)
     .addOptions([
       '-profile:v baseline',
       '-s 640x360',
@@ -40,15 +51,34 @@ function startStreamConversion() {
       '-hls_flags delete_segments'
     ])
     .output(`${hlsOutputDir}/stream.m3u8`)
-    .on('end', () => console.log('Stream conversion ended.'))
-    .on('error', (err) => console.error('Error:', err))
-    .run();
+    .audioCodec('aac')
+    .on('end', () => {
+      console.log('Stream conversion ended.')
+      streamProcess = null;
+      startStreamConversion();
+    })
+    .on('error', (err) => {
+      console.error('Error:', err)
+      streamProcess = null;
+    })
+    .on('start', () => {
+      console.log('Stream started');
+    })
+
+  streamProcess.run();
+
 }
 
-function startRecording(rtspUrl) {
-  const outputPath = getOutputFilePath();
+function startRecording() {
+  isRecording = true;
 
-  recorderProcess = ffmpeg(rtspUrl)
+  const outputPath = getOutputFilePath();
+  recorderProcessConfig = ffmpeg(rtspUrl)
+    .output(outputPath)
+    .size('640x360')
+    .videoCodec('libx264')
+    .audioCodec('aac')
+    .format('mp4')
     .on('start', (commandLine) => {
       console.log(`Recording started: ${commandLine}`);
     })
@@ -56,18 +86,20 @@ function startRecording(rtspUrl) {
       console.error('Error occurred:', err.message);
     })
     .on('end', () => {
-      console.log('Recording stopped');
-    })
-    .size('640x360')
-    .output(outputPath)
-    .videoCodec('libx264')
-    .format('mp4')
-    .run();
+      console.log(`Recording stopped!!!!!`);
+    });
+
+  recorderProcessConfig.run();
 }
 
 function stopRecording() {
-  if (recorderProcess) {
-    recorderProcess.kill();
+  console.log("Attempting to stop recording");
+  if (recorderProcessConfig) {
+    recorderProcessConfig.kill('SIGINT');
+    console.log('Recording stopped');
+    isRecording = false;
+  } else {
+    console.log("No recording process found");
   }
 }
 
@@ -86,22 +118,31 @@ app.use('/hls', express.static('public/hls'));
 // Serve static files
 app.use(express.static('public'));
 
-// Endpoint to start streaming
-app.get('/start-stream', (req, res) => {
-  startStreamConversion();
-  res.send('Stream conversion started.');
-});
-
 app.get('/start-recording', (req, res) => {
   startRecording(rtspUrl);
-  res.send('Recording started');
+
+  const data = {
+    isRecording: isRecording,
+    message: 'Recording started'
+  }
+  res.json(data);
 });
 
 app.get('/stop-recording', (req, res) => {
+  console.log("Received request to stop recording");
+
   stopRecording();
-  res.send('Recording stopped');
+
+  const data = {
+    isRecording: isRecording,
+    message: 'Recording stopped'
+  }
+  res.json(data)
 });
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
+// start stream
+startStreamConversion()
