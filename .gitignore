@@ -65,6 +65,8 @@ artifacts/
 hls
 hls/
 
+recordings/
+
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
 
