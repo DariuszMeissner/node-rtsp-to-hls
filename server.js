@@ -6,24 +6,41 @@ const fs = require('fs');
 const app = express();
 const port = 3000;
 const outputDirectory = path.join(__dirname, 'recordings');
+const hlsOutputDir = path.join(__dirname, 'public/hls');
 let isRecording = false;
 let recorderProcess = null;
 let streamProcess = null;
 
+// RTSP Stream URL
+const rtspUrl = 'rtsp://stream:stream!@88.220.95.114:8555';
+
+
+// Recordings output directory
 if (!fs.existsSync(outputDirectory)) {
   fs.mkdirSync(outputDirectory, { recursive: true });
 }
 
 // HLS output directory
-const hlsOutputDir = path.join(__dirname, 'public/hls');
 if (!fs.existsSync(hlsOutputDir)) {
   fs.mkdirSync(hlsOutputDir, { recursive: true });
+} else {
+  cleanHlsDirectory(hlsOutputDir)
 }
 
-// RTSP Stream URL
-const rtspUrl = 'rtsp://stream:stream!@88.220.95.114:8555';
+function cleanHlsDirectory(directory) {
+  fs.readdir(directory, (err, files) => {
+    if (err) throw err;
 
-const getOutputFilePath = () => {
+    for (const file of files) {
+      fs.unlink(path.join(directory, file), (err) => {
+        if (err) throw err;
+      });
+    }
+  });
+}
+
+
+function getOutputFilePath() {
   const timestamp = Date.now();
   const fileName = `posiedzenie-${timestamp}.mp4`;
   return path.join(outputDirectory, fileName);
@@ -66,6 +83,11 @@ function startStreamConversion() {
 }
 
 function startRecording() {
+  if (isRecording) {
+    console.log('Recording is already running.');
+    return
+  }
+
   isRecording = true;
 
   const outputPath = getOutputFilePath();
@@ -90,6 +112,7 @@ function startRecording() {
 
 function stopRecording() {
   console.log("Attempting to stop recording");
+
   if (recorderProcess) {
     recorderProcess.kill('SIGINT');
     console.log('Recording stopped');
