@@ -13,7 +13,8 @@
   </video>
 
   <button id="startRecordingButton">Start Recording</button>
-  <button id="stopRecordingButton">Stop Recording</button>
+  <button id="endRecordingButton">Stop Recording</button>
+  <div id="status">Recording status: OFFLINE</div>
 
   <script>
     if (Hls.isSupported()) {
@@ -26,18 +27,28 @@
     document.getElementById('startRecordingButton').addEventListener('click', function () {
       fetch('/start-recording')
         .then(response => response.text())
-        .then(data => console.log(data))
+        .then(data => {
+          console.log(data)
+
+          document.getElementById('status').innerHTML = data.isRecording && 'Recording status: END'
+
+        })
         .catch(error => console.error('Error:', error));
+
     });
 
-    document.getElementById('stopRecordingButton').addEventListener('click', function () {
+    document.getElementById('endRecordingButton').addEventListener('click', function () {
       fetch('/stop-recording')
         .then(response => response.text())
-        .then(data => console.log(data))
+        .then(data => {
+          console.log(data)
+
+          document.getElementById('status').innerHTML = !data.isRecording && 'Recording status: END'
+        })
         .catch(error => console.error('Error:', error));
     });
 
-    fetch('/start-stream').then(response => console.log('Streaming started'));
+
   </script>
 </body>
 
