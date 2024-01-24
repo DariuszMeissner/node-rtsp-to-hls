@@ -1,6 +1,7 @@
 const ffmpeg = require('fluent-ffmpeg');
 const path = require('path');
 const fs = require('fs');
+const schedule = require('node-schedule');
 
 const hlsOutputDir = path.join(__dirname, 'public/hls');
 
@@ -8,13 +9,22 @@ function cleanHlsDirectory(directory) {
   fs.readdir(directory, (err, files) => {
     if (err) throw err;
 
-    for (const file of files) {
+    files.forEach(file => {
       fs.unlink(path.join(directory, file), (err) => {
         if (err) throw err;
       });
-    }
+    })
+
   });
 }
+
+function scheduleStreamRestart(rtspUrl) {
+  // Schedule job to run at midnight in Warsaw timezone
+  schedule.scheduleJob({ hour: 23, minute: 0, timezone: 'Europe/Warsaw' }, () => {
+    console.log('Restarting stream conversion at midnight Warsaw time.');
+    startStreamConversion(rtspUrl);
+  });
+};
 
 function startStreamConversion(rtspUrl) {
   // Clean HLS output directory on startup
@@ -23,7 +33,6 @@ function startStreamConversion(rtspUrl) {
   } else {
     cleanHlsDirectory(hlsOutputDir)
   }
-
 
   const streamProcess = ffmpeg(rtspUrl)
     .addOptions([
@@ -49,7 +58,8 @@ function startStreamConversion(rtspUrl) {
     });
 
   streamProcess.run();
+
   return streamProcess;
 }
 
-module.exports = { startStreamConversion };
+module.exports = { startStreamConversion, scheduleStreamRestart };
