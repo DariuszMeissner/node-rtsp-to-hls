@@ -17,7 +17,7 @@ function getOutputFilePath() {
 function startRecording(rtspUrl, isRecording) {
   if (isRecording) {
     console.log('Recording is already running.');
-    return null;
+    return;
   }
 
   const outputPath = getOutputFilePath();
