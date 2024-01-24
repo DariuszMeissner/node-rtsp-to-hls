@@ -2,8 +2,9 @@
 <html>
 
 <head>
-  <title>RTSP Stream to HLS</title>
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <title>Stream z posiedzenia rady</title>
+  <script src=" https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <link rel="stylesheet" href="main.css" />
 </head>
 
 <body>
@@ -12,56 +13,19 @@
     Your browser does not support the video tag.
   </video>
 
-  <button id="startRecordingButton">Rozpocznij nagywanie</button>
-  <button id="endRecordingButton">Zakończ nagrywanie</button>
   <div>
+    <!-- <button id="startStream">Rozpocznij streaming</button>
+    <button id="endStream">Zakończ streaming</button> -->
+    <button id="startRecordingButton">Rozpocznij nagywanie</button>
+    <button id="endRecordingButton">Zakończ nagrywanie</button>
+  </div>
+  <div id="status-wrapper">
     <span>Status nagrywania:&nbsp;</span>
-    <span id="status">OFF</span>
+    <span id="status"></span>
+    <span id="light" class="recording-light"></span>
   </div>
 
-  <script>
-    if (Hls.isSupported()) {
-      var video = document.getElementById('video');
-      var hls = new Hls();
-      hls.loadSource('/hls/stream.m3u8');
-      hls.attachMedia(video);
-    }
-
-    document.getElementById('startRecordingButton').addEventListener('click', function () {
-      fetch('/start-recording')
-        .then(response => response.json())
-        .then(data => {
-          console.log(data)
-
-          document.getElementById('status').innerHTML = data.isRecording && 'NAGRYWANIE'
-
-        })
-        .catch(error => console.error('Error:', error));
-
-    });
-
-    document.getElementById('endRecordingButton').addEventListener('click', function () {
-      fetch('/stop-recording')
-        .then(response => response.json())
-        .then(data => {
-          console.log(data)
-
-          document.getElementById('status').innerHTML = !data.isRecording && 'WYŁĄCZONE'
-        })
-        .catch(error => console.error('Error:', error));
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-      fetch('/recording-status')
-        .then(response => response.json())
-        .then(data => {
-          console.log(data)
-
-          document.getElementById('status').innerHTML = data.isRecording ? 'NAGRYWANIE' : 'WYŁĄCZONE'
-        })
-        .catch(error => console.error('Error:', error));
-    })
-  </script>
+  <script src="main.js"></script>
 </body>
 
 </html>
