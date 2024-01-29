@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const schedule = require('node-schedule');
 
-const hlsOutputDir = path.join(__dirname, 'public/hls');
+const hlsOutputDir = path.join(__dirname, '/public/hls');
 
 function cleanHlsDirectory(directory) {
   fs.readdir(directory, (err, files) => {
@@ -36,7 +36,6 @@ function startStreamConversion(rtspUrl) {
 
   const streamProcess = ffmpeg(rtspUrl)
     .addOptions([
-      '-profile:v baseline',
       '-s 640x360',
       '-start_number 0',
       '-hls_time 2',
@@ -45,6 +44,7 @@ function startStreamConversion(rtspUrl) {
       '-hls_flags delete_segments'
     ])
     .output(`${hlsOutputDir}/stream.m3u8`)
+    .videoCodec('libx264')
     .audioCodec('aac')
     .on('end', () => {
       console.log('Stream conversion ended.');

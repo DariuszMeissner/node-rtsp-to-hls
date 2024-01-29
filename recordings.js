@@ -2,7 +2,7 @@ const ffmpeg = require('fluent-ffmpeg');
 const path = require('path');
 const fs = require('fs');
 
-const outputDirectory = path.join(__dirname, 'recordings');
+const outputDirectory = path.join(__dirname, '/recordings');
 
 if (!fs.existsSync(outputDirectory)) {
   fs.mkdirSync(outputDirectory, { recursive: true });
@@ -21,11 +21,10 @@ function startRecording(rtspUrl, isRecording) {
   }
 
   const outputPath = getOutputFilePath();
+
   const recorderProcess = ffmpeg(rtspUrl)
     .output(outputPath)
     .size('1280x720')
-    .videoCodec('libx264')
-    .audioCodec('aac')
     .format('mp4')
     .on('start', (commandLine) => {
       console.log(`Recording started: ${commandLine}`);
@@ -38,6 +37,7 @@ function startRecording(rtspUrl, isRecording) {
     });
 
   recorderProcess.run();
+
   return recorderProcess;
 }
 

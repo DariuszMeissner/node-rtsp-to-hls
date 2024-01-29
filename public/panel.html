@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Panel nagrywania</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <link rel="stylesheet" href="style.css" />
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+</head>
+
+<body>
+  <div class="page-wrapper">
+    <button id="logoutButton">Logout</button>
+    <h2>Tytuł strony</h2>
+    <video id="video" autoplay controls>
+      <source src="hls/stream.m3u8" type="application/x-mpegURL">
+      Your browser does not support the video tag.
+    </video>
+
+    <div class="navigation-panel">
+      <div>
+        <!-- <button id="startStream">Rozpocznij streaming</button>
+        <button id="endStream">Zakończ streaming</button> -->
+        <button id="startRecordingButton" class="btn btn--green">Rozpocznij nagywanie</button>
+        <button id="endRecordingButton" class="btn btn--red">Zakończ nagrywanie</button>
+      </div>
+
+      <div id="status-wrapper">
+        <span>Status nagrywania:&nbsp;</span>
+        <span id="status"></span>
+        <span id="light" class="recording-light"></span>
+      </div>
+    <div>
+  </div>
+<script src="panel.js"></script>
+</body>
+
+</html>

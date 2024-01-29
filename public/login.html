@@ -9,13 +9,13 @@
 </head>
 
 <body>
-  <div class="page-wrapper">
-    <h2>Tytuł strony</h2>
-    <video id="video" autoplay controls>
-      <source src="hls/stream.m3u8" type="application/x-mpegURL">
-      Your browser does not support the video tag.
-    </video>
-  </div>
+ <form id="loginForm">
+        <input type="text" id="username" placeholder="Username" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit">Login</button>
+ </form>
+ <div id="message"></div>
+
+<script src="login.js"></script>
 </body>
-<script src="stream.js"></script>
 </html>

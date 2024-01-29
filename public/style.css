@@ -1,6 +1,39 @@
+body {
+  font-family: 'Arial';
+}
+
 #status-wrapper {
   display: flex;
   align-items: center;
+}
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.page-wrapper video {
+  min-width: 300px;
+  max-width: 700px;
+}
+
+.btn {
+  padding: 8px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  cursor: unset;
+}
+
+.btn--red {
+  background-color: red;
+}
+
+.btn--green {
+  background-color: green;
 }
 
 .recording-light {
