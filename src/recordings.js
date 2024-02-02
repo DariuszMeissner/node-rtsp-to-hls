@@ -2,7 +2,7 @@ const ffmpeg = require('fluent-ffmpeg');
 const path = require('path');
 const fs = require('fs');
 
-const outputDirectory = path.join(__dirname, '/recordings');
+const outputDirectory = 'recordings';
 
 if (!fs.existsSync(outputDirectory)) {
   fs.mkdirSync(outputDirectory, { recursive: true });
