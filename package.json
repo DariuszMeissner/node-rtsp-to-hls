@@ -4,8 +4,14 @@
   "description": "Server nodej to translate signal from rtsp to hls",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "tsc && node dist/app.js",
+    "dev": "nodemon - exec 'ts-node' src/app.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . - ext .ts"
   },
+  "pre-commit": [
+    "lint-fix"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DariuszMeissner/node-rtsp-to-hls.git"
@@ -18,6 +24,7 @@
   },
   "homepage": "https://github.com/DariuszMeissner/node-rtsp-to-hls#readme",
   "dependencies": {
+    "-": "^0.0.1",
     "body-parser": "^1.20.2",
     "dotenv": "^16.3.2",
     "express": "^4.18.2",
@@ -26,6 +33,17 @@
     "fluent-ffmpeg": "^2.1.2",
     "helmet": "^7.1.0",
     "node-schedule": "^2.1.1",
-    "socket.io": "^4.7.4"
+    "nodemon": "^3.0.3",
+    "save-dev": "^0.0.1-security",
+    "socket.io": "^4.7.4",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.16",
+    "@typescript-eslint/eslint-plugin": "^6.20.0",
+    "@typescript-eslint/parser": "^6.20.0",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
   }
 }
