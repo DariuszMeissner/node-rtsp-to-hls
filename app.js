@@ -6,10 +6,10 @@ const bodyParser = require("body-parser");
 const path = require("path")
 const rateLimit = require('express-rate-limit');
 
-const { startRecording, stopRecording } = require('./recordings');
-const { startStreamConversion } = require('./hlsStream');
-const { isAuthenticated, isLoggedIn } = require('./auth')
-const { getStatus, updateStatus } = require('./streamState')
+const { startRecording, stopRecording } = require('./src/recordings');
+const { startStreamConversion } = require('./src/hlsStream');
+const { isAuthenticated, isLoggedIn } = require('./src/auth')
+const { getStatus, updateStatus } = require('./src/streamState')
 
 const app = express();
 const port = 3000;
@@ -52,7 +52,7 @@ app.use(helmet.contentSecurityPolicy({
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(limiter);
-app.use(express.static('../public'));
+app.use(express.static('public'));
 
 app.get('/events', (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
@@ -69,7 +69,6 @@ app.get('/events', (req, res) => {
 });
 
 app.get('/start-stream', (req, res) => {
-
   streamProcess = startStreamConversion(process.env.RTSP_URL);
 
   res.json({
@@ -120,7 +119,7 @@ app.get('/recording-status', (req, res) => {
 })
 
 app.get('/panel', isAuthenticated, (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/pages', 'panel-admin.html'));
+  res.sendFile(path.join(__dirname, 'public/pages', 'panel-admin.html'));
 });
 
 app.post('/login', (req, res) => {
@@ -135,7 +134,7 @@ app.post('/login', (req, res) => {
 });
 
 app.get('/login', isLoggedIn, (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/pages', 'login-panel.html'));
+  res.sendFile(path.join(__dirname, 'public/pages', 'login-panel.html'));
 });
 
 app.post('/logout', (req, res) => {
