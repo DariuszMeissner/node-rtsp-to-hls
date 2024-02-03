@@ -1,7 +1,6 @@
 const ffmpeg = require('fluent-ffmpeg');
 const path = require('path');
 const fs = require('fs');
-const schedule = require('node-schedule');
 
 const { updateStatus } = require('./streamState')
 
@@ -29,7 +28,7 @@ async function findFile(directory, fileName) {
 }
 
 function startStreamConversion(rtspUrl) {
-  const hlsOutputDir = '../public/hls';
+  const hlsOutputDir = 'public/hls';
 
   // Clean HLS output directory on startup
   if (!fs.existsSync(hlsOutputDir)) {
