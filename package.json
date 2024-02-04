@@ -27,5 +27,9 @@
     "helmet": "^7.1.0",
     "node-schedule": "^2.1.1",
     "socket.io": "^4.7.4"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "eslint-plugin-node": "^11.1.0"
   }
 }

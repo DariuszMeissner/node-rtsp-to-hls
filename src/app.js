@@ -1,15 +1,14 @@
 const express = require('express');
 const session = require('express-session');
-require('dotenv').config();
 const helmet = require('helmet');
 const bodyParser = require("body-parser");
 const path = require("path")
 const rateLimit = require('express-rate-limit');
 
-const { startRecording, stopRecording } = require('./src/recordings');
-const { startStreamConversion } = require('./src/hlsStream');
-const { isAuthenticated, isLoggedIn } = require('./src/auth')
-const { getStatus, updateStatus } = require('./src/streamState')
+const { startRecording, stopRecording } = require('./recordings');
+const { startStreamConversion } = require('./hlsStream');
+const { isAuthenticated, isLoggedIn } = require('./auth')
+const { getStatus, updateStatus } = require('./streamState')
 
 const app = express();
 const port = 3000;
@@ -26,11 +25,11 @@ const limiter = rateLimit({
 express.static.mime.define({ 'application/x-mpegURL': ['m3u8'] });
 express.static.mime.define({ 'video/MP2T': ['ts'] });
 
-app.use('/pages', (req, res, next) => {
+app.use('/pages', (req, res) => {
   res.status(404).send('Not found');
 });
 
-app.use('/pages/*', (req, res, next) => {
+app.use('/pages/*', (req, res) => {
   res.status(404).send('Not found');
 });
 
