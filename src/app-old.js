@@ -1,29 +1,48 @@
 const express = require('express');
-const session = require('express-session');
-const helmet = require('helmet');
-const bodyParser = require("body-parser");
+// const session = require('express-session');
+// const helmet = require('helmet');
 const path = require("path")
-const rateLimit = require('express-rate-limit');
+// const rateLimit = require('express-rate-limit');
 
 const { startRecording, stopRecording } = require('./recordings');
 const { startStreamConversion } = require('./hlsStream');
 const { isAuthenticated, isLoggedIn } = require('./auth')
 const { getStatus, updateStatus } = require('./streamState')
 
-const app = express();
-const port = 3000;
-let isRecording = false;
-let recorderProcess = null;
-let streamProcess = null;
-let clients = [];
+// const app = express();
+// const port = 3000;
+// let isRecording = false;
+// let recorderProcess = null;
+// let streamProcess = null;
+// let clients = [];
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
-});
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 100 // limit each IP to 100 requests per windowMs
+// });
 
-express.static.mime.define({ 'application/x-mpegURL': ['m3u8'] });
-express.static.mime.define({ 'video/MP2T': ['ts'] });
+// express.static.mime.define({ 'application/x-mpegURL': ['m3u8'] });
+// express.static.mime.define({ 'video/MP2T': ['ts'] });
+
+// app.use(helmet.contentSecurityPolicy({
+//   directives: {
+//     "default-src": ["'self'"],
+//     "media-src": ["'self'", "blob:"],
+//     "script-src": ["'self'", "https://cdn.jsdelivr.net/npm/hls.js@latest", "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css", "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"],
+//     "worker-src": ["'self'", "blob:"]
+//   }
+// }));
+// app.use(bodyParser.json());
+// app.use(express.urlencoded({ extended: true }));
+// app.use(limiter);
+// app.use(express.static('public'));
+
+// app.use(session({
+//   secret: process.env.SESSION_KEY,
+//   resave: false,
+//   saveUninitialized: false,
+//   cookie: { secure: 'auto', maxAge: 60000 }
+// }));
 
 app.use('/pages', (req, res) => {
   res.status(404).send('Not found');
@@ -32,26 +51,6 @@ app.use('/pages', (req, res) => {
 app.use('/pages/*', (req, res) => {
   res.status(404).send('Not found');
 });
-
-app.use(session({
-  secret: process.env.SESSION_KEY,
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: 'auto', maxAge: 60000 }
-}));
-
-app.use(helmet.contentSecurityPolicy({
-  directives: {
-    "default-src": ["'self'"],
-    "media-src": ["'self'", "blob:"],
-    "script-src": ["'self'", "https://cdn.jsdelivr.net/npm/hls.js@latest", "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css", "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"],
-    "worker-src": ["'self'", "blob:"]
-  }
-}));
-app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(limiter);
-app.use(express.static('public'));
 
 app.get('/events', (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
