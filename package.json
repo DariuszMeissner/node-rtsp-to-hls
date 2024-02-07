@@ -4,8 +4,14 @@
   "description": "Server nodej to translate signal from rtsp to hls",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "tsc && node dist/app.js",
+    "dev": "nodemon - exec 'ts-node' src/app.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . - ext .ts"
   },
+  "pre-commit": [
+    "lint-fix"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DariuszMeissner/node-rtsp-to-hls.git"
@@ -19,6 +25,7 @@
   },
   "homepage": "https://github.com/DariuszMeissner/node-rtsp-to-hls#readme",
   "dependencies": {
+    "-": "^0.0.1",
     "body-parser": "^1.20.2",
     "dotenv": "^16.3.2",
     "express": "^4.18.2",
