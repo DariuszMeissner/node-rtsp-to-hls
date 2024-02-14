@@ -1,5 +1,5 @@
-import express from "express"
-import Server from "./src/Server.js"
+const express = require('express')
+const Server = require("./src/Server.js")
 
 const app = express();
 // eslint-disable-next-line no-unused-vars
