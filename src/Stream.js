@@ -1,8 +1,7 @@
-import ffmpeg from 'fluent-ffmpeg'
-import { ffmpegConfig, streamConfig } from './config/config';
-import { checkDirectoryExists, cleanDirectory, createDirectory, findFile } from './helpers';
-
-export default class Stream {
+const ffmpeg = require('fluent-ffmpeg')
+const { ffmpegConfig, streamDirectory } = require('./config/config.js')
+const { checkDirectoryExists, cleanDirectory, createDirectory, findFile } = require('./helpers/index.js')
+class Stream {
   data = {
     streamProcess: null,
     clients: [],
@@ -11,10 +10,22 @@ export default class Stream {
       message: null
     }
   }
+  static instance = null
 
   constructor() { }
 
-  setStream(processState) {
+  static getInstance() {
+    if (!Stream.instance) {
+      Stream.instance = new Stream();
+    }
+    return Stream.instance;
+  }
+
+  clearInstance() {
+    Stream.instance = null;
+  }
+
+  setStreamProcess(processState) {
     this.data.streamProcess = processState;
   }
 
@@ -32,7 +43,7 @@ export default class Stream {
   }
 
   validateDirectory() {
-    const hlsOutputDir = streamConfig.hls.output.dir
+    const hlsOutputDir = streamDirectory.hls.output.dir
     const isHlsDirectory = checkDirectoryExists(hlsOutputDir)
 
     isHlsDirectory ? cleanDirectory(hlsOutputDir) : createDirectory(hlsOutputDir)
@@ -40,6 +51,7 @@ export default class Stream {
 
   checkFileStreamExists(hlsOutputDir, hlsOutputFileName) {
     const checkingTime = 1000;
+
     const interval = setInterval(async () => {
       const fileStreamExists = await findFile(hlsOutputDir, hlsOutputFileName);
 
@@ -73,15 +85,26 @@ export default class Stream {
         this.checkFileStreamExists(config.outputDirectory, config.outputFile)
       });
 
-    this.setStream(streamProcess);
+    this.setStreamProcess(streamProcess);
   }
 
   startStreamConversion() {
-    this.validateDirectory();
+    this.validateDirectory()
     this.processFFmpegStream(ffmpegConfig)
 
     this.data.streamProcess.run();
 
     return this.data.streamProcess;
   }
+
+  killStreamProcess() {
+    if (this.data.streamProcess) {
+      this.data.streamProcess.kill('SIGINT');
+      this.setStreamProcess(null)
+      this.updateStatus(null, 'stream ended');
+      this.clearInstance();
+    }
+  }
 }
+
+module.exports = Stream 
