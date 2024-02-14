@@ -58,7 +58,6 @@ app.get('/events', (req, res) => {
   res.setHeader('Connection', 'keep-alive');
   res.flushHeaders();
 
-
   clients.push(res);
 
   req.on('close', () => {
@@ -66,89 +65,102 @@ app.get('/events', (req, res) => {
   });
 });
 
-app.get('/start-stream', (req, res) => {
-  streamProcess = startStreamConversion(process.env.RTSP_URL);
-
-  res.json({
-    isStarted: getStatus(),
-  });
-});
-
-app.get('/end-stream', (req, res) => {
-  if (streamProcess) {
-    streamProcess.kill('SIGINT');
-  }
-  updateStatus(null, 'stream ended');
-
-  clients.forEach(client => {
-    client.write(`data: ${JSON.stringify({ isStarted: getStatus() })}\n\n`);
-  });
-
-  res.end();
-});
-
-app.get('/stream-status', (req, res) => {
-  res.json(getStatus());
-});
-
-app.get('/start-recording', (req, res) => {
-  recorderProcess = startRecording(process.env.RTSP_URL, isRecording);
-  isRecording = !!recorderProcess;
-
-  res.json({
-    isRecording,
-    message: isRecording ? 'Recording started' : 'Recording failed to start'
-  });
-});
-
-app.get('/stop-recording', (req, res) => {
-  stopRecording(recorderProcess);
-  isRecording = false;
-
-  res.json({
-    isRecording,
-    message: 'Recording stopped'
-  });
-});
 
 
-app.get('/recording-status', (req, res) => {
-  res.json({ isRecording: isRecording })
-})
 
-app.get('/panel', isAuthenticated, (req, res) => {
-  res.sendFile(path.join(__dirname, 'public/pages', 'panel-admin.html'));
-});
 
-app.post('/login', (req, res) => {
-  const { username, password } = req.body;
+// app.get('/start-stream', (req, res) => {
+//   streamProcess = startStreamConversion(process.env.RTSP_URL);
 
-  if (username === process.env.USER_LOGIN && password === process.env.USER_PASSWORD) {
-    req.session.user = { username: process.env.USER_LOGIN }; // Set user in session
-    res.json({ success: true, redirect: '/panel' });
-  } else {
-    res.json({ success: false, message: 'Invalid credentials' });
-  }
-});
+//   res.json({
+//     isStarted: getStatus(),
+//   });
+// });
 
-app.get('/login', isLoggedIn, (req, res) => {
-  res.sendFile(path.join(__dirname, 'public/pages', 'login-panel.html'));
-});
+// app.get('/end-stream', (req, res) => {
+//   if (streamProcess) {
+//     streamProcess.kill('SIGINT');
+//   }
+//   updateStatus(null, 'stream ended');
 
-app.post('/logout', (req, res) => {
-  if (req.session) {
-    req.session.destroy((err) => {
-      if (err) {
-        res.status(500).send('Could not log out, please try again');
-      } else {
-        res.send('Logout successful');
-      }
-    });
-  } else {
-    res.end();
-  }
-});
+//   clients.forEach(client => {
+//     client.write(`data: ${JSON.stringify({ isStarted: getStatus() })}\n\n`);
+//   });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+//   res.end();
+// });
+
+// app.get('/stream-status', (req, res) => {
+//   res.json(getStatus());
+// });
+
+
+
+
+
+// app.get('/start-recording', (req, res) => {
+//   recorderProcess = startRecording(process.env.RTSP_URL, isRecording);
+//   isRecording = !!recorderProcess;
+
+//   res.json({
+//     isRecording,
+//     message: isRecording ? 'Recording started' : 'Recording failed to start'
+//   });
+// });
+
+// app.get('/stop-recording', (req, res) => {
+//   stopRecording(recorderProcess);
+//   isRecording = false;
+
+//   res.json({
+//     isRecording,
+//     message: 'Recording stopped'
+//   });
+// });
+
+
+// app.get('/recording-status', (req, res) => {
+//   res.json({ isRecording: isRecording })
+// })
+
+
+
+
+
+// app.get('/panel', isAuthenticated, (req, res) => {
+//   res.sendFile(path.join(__dirname, 'public/pages', 'panel-admin.html'));
+// });
+
+
+
+
+
+
+// app.post('/login', (req, res) => {
+//   const { username, password } = req.body;
+
+//   if (username === process.env.USER_LOGIN && password === process.env.USER_PASSWORD) {
+//     req.session.user = { username: process.env.USER_LOGIN }; // Set user in session
+//     res.json({ success: true, redirect: '/panel' });
+//   } else {
+//     res.json({ success: false, message: 'Invalid credentials' });
+//   }
+// });
+
+// app.get('/login', isLoggedIn, (req, res) => {
+//   res.sendFile(path.join(__dirname, 'public/pages', 'login-panel.html'));
+// });
+
+// app.post('/logout', (req, res) => {
+//   if (req.session) {
+//     req.session.destroy((err) => {
+//       if (err) {
+//         res.status(500).send('Could not log out, please try again');
+//       } else {
+//         res.send('Logout successful');
+//       }
+//     });
+//   } else {
+//     res.end();
+//   }
+// });
