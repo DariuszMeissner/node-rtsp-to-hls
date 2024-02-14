@@ -1,4 +1,4 @@
-export default function isAuthenticated(req, res, next) {
+module.exports = function isAuthenticated(req, res, next) {
   if (req.session.user) {
     next();
   } else {
