@@ -1,7 +1,7 @@
-import fs from 'fs/promises'
-import path from 'path';
+const fs = require('fs').promises
+const path = require('path')
 
-export async function createDirectory(output) {
+async function createDirectory(output) {
   try {
     await fs.mkdir(output, { recursive: true })
   } catch (err) {
@@ -9,18 +9,20 @@ export async function createDirectory(output) {
   }
 }
 
-export async function cleanDirectory(directory) {
+async function cleanDirectory(directory) {
   try {
     const files = await fs.readdir(directory);
     const deletePromises = files.map(file => fs.unlink(path.join(directory, file)));
-    await Promise.all(deletePromises);
+    const removed = await Promise.all(deletePromises);
+
+    if (removed) console.log('Directory was cleaned');
   } catch (err) {
     console.error('Error cleaning the HLS directory:', err);
-    throw err; // Rethrow if you want to handle this error further up the call stack
+    throw err;
   }
 }
 
-export async function findFile(directory, fileName) {
+async function findFile(directory, fileName) {
   try {
     const files = await fs.readdir(directory);
     return files.includes(fileName);
@@ -30,10 +32,13 @@ export async function findFile(directory, fileName) {
   }
 }
 
-export async function checkDirectoryExists(directory) {
+async function checkDirectoryExists(directory) {
   try {
-    await fs.readdir(directory)
+    const response = await fs.readdir(directory)
+    if (response) console.log('Directory exists!');
   } catch (err) {
     console.log(err);
   }
 }
+
+module.exports = { createDirectory, findFile, checkDirectoryExists, cleanDirectory }
