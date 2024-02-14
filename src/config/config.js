@@ -1,3 +1,6 @@
+const path = require('path')
+require('dotenv').config()
+
 const serverConfig = {
   cors: {
     origin: `http://localhost:${process.env.PORT}`
@@ -15,8 +18,8 @@ const serverConfig = {
     }
   },
   sessionOptions: {
-    secret: `${process.env.SESSION_KEY}`,
-    resave: false,
+    secret: process.env.SESSION_KEY,
+    resave: true,
     saveUninitialized: false,
     cookie: { secure: 'auto', maxAge: 60000 }
   }
@@ -25,7 +28,7 @@ const serverConfig = {
 const streamDirectory = {
   hls: {
     output: {
-      dir: 'public/hls',
+      dir: path.join(__dirname, '../../public/hls'),
       fileName: 'stream.m3u8'
     }
   },
@@ -50,5 +53,16 @@ const ffmpegConfig = {
   outputFile: streamDirectory.hls.output.fileName
 }
 
+const recordingDirectory = {
+  outputDirectory: '../../recordings',
+}
 
-export { serverConfig, streamDirectory, ffmpegConfig }
+const recorderFFmpegConfig = {
+  rtspUrl: process.env.RTSP_URL,
+  size: '1280x720',
+  format: 'mp4',
+  output: recordingDirectory.outputDirectory,
+}
+
+
+module.exports = { serverConfig, streamDirectory, ffmpegConfig, recordingDirectory, recorderFFmpegConfig }
