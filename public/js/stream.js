@@ -1,8 +1,13 @@
-class Stream {
-
-}
+const evtSource = new EventSource("/events");
+evtSource.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  if (!data.isStarted.found) {
+    window.location.reload();
+  }
+};
 
 function showStream() {
+  // eslint-disable-next-line no-undef
   if (Hls.isSupported()) {
     const video = document.getElementById('video');
     const navigationPanel = document.querySelector('.navigation-panel');
@@ -14,6 +19,7 @@ function showStream() {
     if (endStreamBtn) { endStreamBtn.classList.remove('hide') }
     video.classList.remove('hide');
 
+    // eslint-disable-next-line no-undef
     const hls = new Hls();
     hls.loadSource('/hls/stream.m3u8');
     hls.attachMedia(video);
@@ -52,22 +58,25 @@ async function checkStreamStatus() {
   }
 }
 
-const evtSource = new EventSource("/events");
+async function chechStreamOnStartPage() {
+  try {
+    const response = await fetch('/stream-status');
+    const data = await response.json();
 
-evtSource.onmessage = function (event) {
-  const data = JSON.parse(event.data);
-
-  if (!data.isStarted.found) {
-    // Handle the event, e.g., reload the page or update UI
-    window.location.reload();
+    if (data.found) {
+      showStream()
+    }
+  } catch (error) {
+    console.error('Error fetching stream status:', error);
+    document.getElementById('stream-status').textContent = "Error checking status.";
   }
-};
+}
 
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', () => {
+  chechStreamOnStartPage()
+
   const startStreamBtn = document.getElementById('startStream')
   if (startStreamBtn) {
-    startStreamBtn.addEventListener('click', () => {
-      checkStreamStatus()
-    })
+    startStreamBtn.addEventListener('click', checkStreamStatus)
   }
 })
