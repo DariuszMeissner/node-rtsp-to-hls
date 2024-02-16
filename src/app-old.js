@@ -52,18 +52,18 @@ app.use('/pages/*', (req, res) => {
   res.status(404).send('Not found');
 });
 
-app.get('/events', (req, res) => {
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
-  res.flushHeaders();
+// app.get('/events', (req, res) => {
+//   res.setHeader('Content-Type', 'text/event-stream');
+//   res.setHeader('Cache-Control', 'no-cache');
+//   res.setHeader('Connection', 'keep-alive');
+//   res.flushHeaders();
 
-  clients.push(res);
+//   clients.push(res);
 
-  req.on('close', () => {
-    clients = clients.filter(client => client !== res);
-  });
-});
+//   req.on('close', () => {
+//     clients = clients.filter(client => client !== res);
+//   });
+// });
 
 
 
