@@ -21,7 +21,7 @@ const serverConfig = {
     secret: process.env.SESSION_KEY,
     resave: true,
     saveUninitialized: false,
-    cookie: { secure: 'auto', maxAge: 60000 }
+    cookie: { secure: process.env.NODE_ENV === "production", maxAge: 3600000 }
   }
 }
 
@@ -54,7 +54,7 @@ const ffmpegConfig = {
 }
 
 const recordingDirectory = {
-  outputDirectory: '../../recordings',
+  outputDirectory: path.join(__dirname, '../../recordings'),
 }
 
 const recorderFFmpegConfig = {
