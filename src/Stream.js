@@ -12,8 +12,6 @@ class Stream {
   }
   static instance = null
 
-  constructor() { }
-
   static getInstance() {
     if (!Stream.instance) {
       Stream.instance = new Stream();
@@ -27,6 +25,10 @@ class Stream {
 
   setStreamProcess(processState) {
     this.data.streamProcess = processState;
+  }
+
+  addClient(client) {
+    this.data.clients.push(client)
   }
 
   getStream() {
