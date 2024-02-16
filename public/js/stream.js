@@ -65,6 +65,9 @@ async function chechStreamOnStartPage() {
 
     if (data.found) {
       showStream()
+      document.getElementById('stream-status').textContent = "Stream online"
+    } else {
+      document.getElementById('stream-status').textContent = "Stream offline"
     }
   } catch (error) {
     console.error('Error fetching stream status:', error);
