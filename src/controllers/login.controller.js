@@ -17,7 +17,7 @@ const loginPostController = async (req, res) => {
 
 const loginGetController = async (req, res) => {
   try {
-    res.sendFile(path.join(__dirname, 'public/pages', 'login-panel.html'));
+    res.sendFile(path.join(__dirname, '../../public/pages', 'login-panel.html'));
   } catch (error) {
     console.error(error);
   }
