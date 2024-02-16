@@ -35,7 +35,9 @@ async function findFile(directory, fileName) {
 async function checkDirectoryExists(directory) {
   try {
     const response = await fs.readdir(directory)
-    if (response) console.log('Directory exists!');
+    if (response) {
+      console.log('Directory exists!', directory)
+    }
   } catch (err) {
     console.log(err);
   }
