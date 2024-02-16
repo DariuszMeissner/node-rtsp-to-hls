@@ -1,7 +1,6 @@
 const ffmpeg = require('fluent-ffmpeg');
 const { recorderFFmpegConfig, recordingDirectory } = require("./config/config");
 const { checkDirectoryExists, createDirectory } = require("./helpers");
-const path = require('path')
 
 class Recorder {
   recorderProcess = null;
@@ -39,7 +38,7 @@ class Recorder {
     const timestamp = Date.now();
     const fileName = `posiedzenie-${timestamp}.mp4`;
 
-    return path.join(directoryPath, fileName);
+    return `${directoryPath}/${fileName}`
   }
 
   processFFmpegRecording(config) {
