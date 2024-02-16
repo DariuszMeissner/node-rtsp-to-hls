@@ -3,14 +3,12 @@ const Recorder = require('../Recorder');
 const startRecordingController = async (req, res) => {
   try {
     const recorderInstance = Recorder.getInstanceRecorder()
-    const response = await recorderInstance.startRecording()
+    recorderInstance.startRecording()
 
-    if (response) {
-      res.json({
-        isRecording: true,
-        message: 'Recording started'
-      })
-    }
+    res.json({
+      isRecording: true,
+      message: 'Recording started'
+    })
   } catch (error) {
     res.status(500).json({ isRecording: false, message: 'Failed recording stream' })
   }
@@ -19,14 +17,8 @@ const startRecordingController = async (req, res) => {
 const endRecordingController = async (req, res) => {
   try {
     const recorderInstance = Recorder.getInstanceRecorder()
-    const response = await recorderInstance.endRecording()
-
-    if (response) {
-      res.json({ isRecording: false, message: 'Recording ended' })
-    } else {
-      console.error('Recording process could not be killed because not exist.');
-      res.status(400).json({ error: 'Recording process could not be killed because not exist.' });
-    }
+    recorderInstance.endRecording()
+    res.json({ isRecording: false, message: 'Recording ended' })
   } catch (error) {
     console.error('Failed to end recording:', error);
     res.status(500).json({ isRecording: false, message: 'Failed recording stream' })
@@ -35,14 +27,14 @@ const endRecordingController = async (req, res) => {
 
 const statusRecordingController = async (req, res) => {
   try {
-    const recorderInstance = Recorder.getInstance();
-    const status = await recorderInstance.getRecorderProcess();
+    const recorderInstance = Recorder.getInstanceRecorder();
+    const status = recorderInstance.getRecorderProcess();
 
     if (status) {
       res.json({ isRecording: true })
     } else {
-      console.error('Recording process not started.');
-      res.status(400).json({ isRecording: true, error: 'Recording process not started.' });
+      console.log('Recording process not started.');
+      res.json({ isRecording: false, error: 'Recording process not started.' });
     }
   } catch (error) {
     console.error('Failed to get recorder status:', error);
