@@ -12,8 +12,7 @@ class StreamRoutes {
   intializeRoutes() {
     this.router.get('/start-stream', startStreamController)
     this.router.get('/end-stream', endStreamController)
-    this.router.get('/status-stream', statusStreamController)
-
+    this.router.get('/stream-status', statusStreamController)
   }
 }
 
