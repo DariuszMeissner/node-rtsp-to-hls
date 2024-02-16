@@ -1,5 +1,5 @@
 const express = require('express')
-const { startRecordingController, endRecordingController } = require('../controllers/recorder.controller')
+const { startRecordingController, endRecordingController, statusRecordingController } = require('../controllers/recorder.controller')
 
 class RecorderRoutes {
   router = express.Router()
@@ -11,7 +11,7 @@ class RecorderRoutes {
   intializeRoutes() {
     this.router.get('/start-recording', startRecordingController)
     this.router.get('/end-recording', endRecordingController)
-    this.router.get('/status-recording', startRecordingController)
+    this.router.get('/recording-status', statusRecordingController)
   }
 }
 
