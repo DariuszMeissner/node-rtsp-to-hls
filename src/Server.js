@@ -10,6 +10,7 @@ const streamRoutes = require("./routes/stream.routes.js")
 const recorderRoutes = require('./routes/recorder.routes.js')
 const logoutRoutes = require('./routes/logout.routes.js')
 const loginRoutes = require('./routes/login.routes.js')
+const eventsRoutes = require('./routes/events.routes.js')
 
 class Server {
   constructor(app) {
@@ -20,6 +21,7 @@ class Server {
     app.use('/', recorderRoutes);
     app.use('/', logoutRoutes)
     app.use('/', loginRoutes)
+    app.use('/', eventsRoutes)
   }
 
   config(app) {
