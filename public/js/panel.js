@@ -27,11 +27,11 @@ startStreamBtn.addEventListener('click', function () {
 endStreamBtn.addEventListener('click', function () {
   fetch('/end-stream')
     .then(response => response.status)
-    .then(data => {
+    .then(() => {
       video.classList.add('hide');
-      if (navigationPanel) { navigationPanel.classList.add('hide') };
-      if (endStreamBtn) { endStreamBtn.classList.add('hide') };
-      if (startStreamBtn) { startStreamBtn.classList.remove('hide') };
+      if (navigationPanel) { navigationPanel.classList.add('hide') }
+      if (endStreamBtn) { endStreamBtn.classList.add('hide') }
+      if (startStreamBtn) { startStreamBtn.classList.remove('hide') }
 
       statusElement.textContent = 'Stream offline'
     })
@@ -41,7 +41,7 @@ endStreamBtn.addEventListener('click', function () {
 startRecordingBtn.addEventListener('click', function () {
   fetch('/start-recording')
     .then(response => response.json())
-    .then(data => {
+    .then(() => {
       statusInfo.innerHTML = recording.state.on
       light.classList.add('blinking-button')
 
@@ -53,9 +53,9 @@ startRecordingBtn.addEventListener('click', function () {
 });
 
 endRecordingBtn.addEventListener('click', function () {
-  fetch('/stop-recording',)
+  fetch('/end-recording',)
     .then(response => response.json())
-    .then(data => {
+    .then(() => {
       statusInfo.innerHTML = recording.state.off
       light.classList.remove('blinking-button')
 
