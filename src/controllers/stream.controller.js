@@ -1,15 +1,13 @@
-
+const Recorder = require('../Recorder')
 const Stream = require('../Stream.js');
 
 const startStreamController = async (req, res) => {
   try {
     const streamInstance = Stream.getInstance();
-    const response = await streamInstance.startStreamConversion();
+    streamInstance.startStreamConversion();
 
-    if (response) {
-      const status = streamInstance.getStatus();
-      res.json(status);
-    }
+    const status = streamInstance.getStatus();
+    res.json(status);
   } catch (error) {
     console.error('Failed to start stream:', error);
     res.status(500).json({ error: 'Failed to start stream' });
@@ -19,15 +17,13 @@ const startStreamController = async (req, res) => {
 const endStreamController = async (req, res) => {
   try {
     const streamInstance = Stream.getInstance();
-    const response = await streamInstance.killStreamProcess();
+    const recorderInstance = Recorder.getInstanceRecorder()
 
-    if (response) {
-      const status = streamInstance.getStatus()
-      res.json(status);
-    } else {
-      console.error('Stream process could not be killed because not exist.');
-      res.status(400).json({ error: 'Stream process could not be killed because not exist.' });
-    }
+    streamInstance.killStreamProcess();
+    if (recorderInstance) recorderInstance.endRecording()
+
+    const status = streamInstance.getStatus()
+    res.json(status);
   } catch (error) {
     console.error('Failed to end stream:', error);
     res.status(500).json({ error: 'Failed to end stream' });
