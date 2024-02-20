@@ -1,10 +1,12 @@
 const ffmpeg = require('fluent-ffmpeg')
 const { ffmpegConfig, streamDirectory } = require('./config/config.js')
 const { checkDirectoryExists, cleanDirectory, createDirectory, findFile } = require('./helpers/index.js')
+const { clearInterval } = require('timers')
 class Stream {
   data = {
     streamProcess: null,
     clients: [],
+    intervalId: null,
     streamfileStatus: {
       found: null,
       message: null
@@ -54,11 +56,11 @@ class Stream {
   checkFileStreamExists(hlsOutputDir, hlsOutputFileName) {
     const checkingTime = 1000;
 
-    const interval = setInterval(async () => {
+    this.data.intervalId = setInterval(async () => {
       const fileStreamExists = await findFile(hlsOutputDir, hlsOutputFileName);
 
       if (fileStreamExists) {
-        clearInterval(interval);
+        clearInterval(this.data.intervalId);
         this.updateStatus(true, 'Stream Online');
         console.log(`${hlsOutputFileName} found in ${hlsOutputDir}`);
       } else {
@@ -81,6 +83,8 @@ class Stream {
       .on('error', (err) => {
         console.error(err);
         streamProcess.kill('SIGINT');
+        clearInterval(this.data.intervalId)
+        console.log('Signal not found, stream ended');
       })
       .on('start', () => {
         console.log('Stream started');
