@@ -9,7 +9,7 @@ class LogoutRoutes {
   }
 
   intializeRoutes() {
-    this.router.post('/post', logoutPostController)
+    this.router.post('/logout', logoutPostController)
   }
 }
 
