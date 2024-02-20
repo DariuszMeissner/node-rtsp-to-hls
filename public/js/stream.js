@@ -45,7 +45,8 @@ async function checkStreamStatus() {
         statusElement.textContent = "Stream loading...";
         if (startStreamBtn) startStreamBtn.classList.add('hide');
       } else {
-        statusElement.textContent = "Stream Offline";
+        continuePolling = false
+        statusElement.textContent = "Brak sygnału z kamery. Stream offline. ";
       }
     } catch (error) {
       console.error('Error fetching stream status:', error);
