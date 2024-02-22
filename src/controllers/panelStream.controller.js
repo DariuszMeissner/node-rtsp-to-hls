@@ -1,6 +1,6 @@
 const path = require('path')
 
-const panelStream = (req, res) => {
+const panelStream = (_, res) => {
   res.sendFile(path.join(__dirname, '../../public/pages', 'panel-admin.html'));
 }
 

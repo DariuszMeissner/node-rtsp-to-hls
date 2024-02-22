@@ -1,7 +1,7 @@
 const Recorder = require('../Recorder')
 const Stream = require('../Stream.js');
 
-const startStreamController = async (req, res) => {
+const startStreamController = async (_, res) => {
   try {
     const streamInstance = Stream.getInstance();
     streamInstance.startStreamConversion();
@@ -14,15 +14,15 @@ const startStreamController = async (req, res) => {
   }
 };
 
-const endStreamController = async (req, res) => {
+const endStreamController = async (_, res) => {
   try {
     const streamInstance = Stream.getInstance();
-    const recorderInstance = Recorder.getInstanceRecorder()
+    const recorderInstance = Recorder.getInstanceRecorder();
 
     streamInstance.killStreamProcess();
-    if (recorderInstance) recorderInstance.endRecording()
+    if (recorderInstance) recorderInstance.endRecording();
 
-    const status = streamInstance.getStatus()
+    const status = streamInstance.getStatus();
     res.json(status);
   } catch (error) {
     console.error('Failed to end stream:', error);
@@ -30,7 +30,7 @@ const endStreamController = async (req, res) => {
   }
 };
 
-const statusStreamController = async (req, res) => {
+const statusStreamController = async (_, res) => {
   try {
     const streamInstance = Stream.getInstance();
     const status = await streamInstance.getStatus();

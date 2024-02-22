@@ -1,7 +1,5 @@
 const statusInfo = document.getElementById('status')
 const light = document.getElementById('light')
-const startRecordingBtn = document.getElementById('startRecordingButton')
-const endRecordingBtn = document.getElementById('endRecordingButton')
 const startStreamBtn = document.getElementById('startStream')
 const endStreamBtn = document.getElementById('endStream')
 const statusElement = document.getElementById('stream-status');
@@ -12,6 +10,18 @@ const recording = {
   state: {
     on: 'ON',
     off: 'OFF'
+  }
+}
+
+async function endRecording() {
+  try {
+    await fetch('/end-recording',)
+    // eslint-disable-next-line no-undef
+    statusInfo.innerHTML = recording.state.off
+    // eslint-disable-next-line no-undef
+    light.classList.remove('blinking-button')
+  } catch (error) {
+    console.error('Error:', error);
   }
 }
 
@@ -36,33 +46,8 @@ endStreamBtn.addEventListener('click', function () {
       statusElement.textContent = 'Stream offline'
     })
     .catch(error => console.error('Error:', error));
-});
 
-startRecordingBtn.addEventListener('click', function () {
-  fetch('/start-recording')
-    .then(response => response.json())
-    .then(() => {
-      statusInfo.innerHTML = recording.state.on
-      light.classList.add('blinking-button')
-
-      startRecordingBtn.classList.add('hide')
-      endRecordingBtn.classList.remove('hide')
-    })
-    .catch(error => console.error('Error:', error));
-
-});
-
-endRecordingBtn.addEventListener('click', function () {
-  fetch('/end-recording',)
-    .then(response => response.json())
-    .then(() => {
-      statusInfo.innerHTML = recording.state.off
-      light.classList.remove('blinking-button')
-
-      startRecordingBtn.classList.remove('hide')
-      endRecordingBtn.classList.add('hide')
-    })
-    .catch(error => console.error('Error:', error));
+  endRecording()
 });
 
 document.getElementById('logoutButton').addEventListener('click', function () {
@@ -93,13 +78,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (data.isRecording) {
         statusInfo.innerHTML = recording.state.on
         light.classList.add('blinking-button')
-        startRecordingBtn.classList.add('hide')
-        endRecordingBtn.classList.remove('hide')
+
       } else {
         statusInfo.innerHTML = recording.state.off
         light.classList.add('button-default')
-        startRecordingBtn.classList.remove('hide')
-        endRecordingBtn.classList.add('hide')
       }
     })
     .catch(error => console.error('Error:', error));

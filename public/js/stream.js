@@ -6,6 +6,18 @@ evtSource.onmessage = (event) => {
   }
 };
 
+async function startRecording() {
+  try {
+    await fetch('/start-recording');
+    // eslint-disable-next-line no-undef
+    statusInfo.innerHTML = recording.state.on;
+    // eslint-disable-next-line no-undef
+    light.classList.add('blinking-button');
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
 function showStream() {
   // eslint-disable-next-line no-undef
   if (Hls.isSupported()) {
@@ -19,10 +31,21 @@ function showStream() {
     if (endStreamBtn) { endStreamBtn.classList.remove('hide') }
     video.classList.remove('hide');
 
-    // eslint-disable-next-line no-undef
-    const hls = new Hls();
-    hls.loadSource('/hls/stream.m3u8');
-    hls.attachMedia(video);
+    // Check if Hls is supported
+    if (typeof Hls === 'undefined') {
+      console.error('Hls is not supported');
+    } else {
+      // Create a new Hls instance
+      // eslint-disable-next-line no-undef
+      const hls = new Hls();
+
+      // Load the HLS stream source
+      hls.loadSource('/hls/stream.m3u8');
+
+      // Attach the HLS stream to the video element
+      hls.attachMedia(video);
+    }
+
   }
 }
 
@@ -41,12 +64,12 @@ async function checkStreamStatus() {
         continuePolling = false
 
         showStream()
+        startRecording()
       } else if (data.found === false) {
         statusElement.textContent = "Stream loading...";
         if (startStreamBtn) startStreamBtn.classList.add('hide');
       } else {
-        continuePolling = false
-        statusElement.textContent = "Brak sygnału z kamery. Stream offline. ";
+        statusElement.textContent = "Stream offline.";
       }
     } catch (error) {
       console.error('Error fetching stream status:', error);
@@ -55,7 +78,7 @@ async function checkStreamStatus() {
     }
 
     // Wait for 2 seconds before next poll
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 4000));
   }
 }
 

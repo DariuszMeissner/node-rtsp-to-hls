@@ -47,10 +47,14 @@ class Stream {
   }
 
   validateDirectory() {
-    const hlsOutputDir = streamDirectory.hls.output.dir
-    const isHlsDirectory = checkDirectoryExists(hlsOutputDir)
+    const hlsOutputDir = streamDirectory.hls.output.dir;
+    const isHlsDirectory = checkDirectoryExists(hlsOutputDir);
 
-    isHlsDirectory ? cleanDirectory(hlsOutputDir) : createDirectory(hlsOutputDir)
+    if (isHlsDirectory) {
+      cleanDirectory(hlsOutputDir);
+    } else {
+      createDirectory(hlsOutputDir);
+    }
   }
 
   checkFileStreamExists(hlsOutputDir, hlsOutputFileName) {
@@ -111,6 +115,8 @@ class Stream {
       this.clearInstance();
     }
   }
+
+
 }
 
 module.exports = Stream 
