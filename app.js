@@ -1,16 +1,26 @@
-const express = require('express')
-const Server = require("./src/Server.js")
+const express = require('express');
+const Server = require("./src/Server.js");
 
-const app = express();
+class AppServer {
+  constructor() {
+    this.app = express();
+    this.server = new Server(this.app);
+    this.PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
+
+    this.init();
+  }
+
+  init() {
+    this.app.listen(this.PORT, "localhost", () => console.log(`Server running at http://localhost:${this.PORT}`))
+      .on('error', (err) => {
+        if (err.code === "EADDRINUSE") {
+          console.log("Error: address already in use");
+        } else {
+          console.log(err);
+        }
+      });
+  }
+}
+
 // eslint-disable-next-line no-unused-vars
-const server = new Server(app)
-const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
-
-app.listen(PORT, "localhost", () => console.log(`Server running at http://localhost:${PORT}`))
-  .on('error', (err) => {
-    if (err.code === "EADDRINUSE") {
-      console.log("Error: address already in use");
-    } else {
-      console.log(err);
-    }
-  })
+const appServer = new AppServer();
