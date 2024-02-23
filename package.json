@@ -36,7 +36,9 @@
     "socket.io": "^4.7.4"
   },
   "devDependencies": {
+    "bootstrap": "^5.3.3",
     "eslint": "^8.56.0",
-    "eslint-plugin-node": "^11.1.0"
+    "eslint-plugin-node": "^11.1.0",
+    "react-bootstrap": "^2.10.1"
   }
 }
