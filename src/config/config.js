@@ -3,7 +3,8 @@ require('dotenv').config()
 
 const serverConfig = {
   cors: {
-    origin: `http://localhost:${process.env.PORT}`
+    // access from react app on http://localhost:3000
+    origin: 'http://localhost:3000'
   },
   limiter: {
     windowMs: 15 * 60 * 1000, // 15 minutes
