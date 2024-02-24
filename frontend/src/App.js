@@ -4,6 +4,7 @@ import Layout from './pages/Layout';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import AdminPanel from './pages/AdminPanel';
+import NoPage from './pages/NoPage';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path='login' element={<Login />} />
           <Route path='panel' element={<AdminPanel />} />
+          <Route path='*' element={<NoPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
