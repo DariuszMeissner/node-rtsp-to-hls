@@ -5,7 +5,7 @@ class AppServer {
   constructor() {
     this.app = express();
     this.server = new Server(this.app);
-    this.PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
+    this.PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 9000;
 
     this.init();
   }
