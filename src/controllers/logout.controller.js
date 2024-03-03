@@ -11,13 +11,11 @@ const destroySession = (session) => {
 
 const logoutPostController = async (req, res) => {
   if (req.session) {
-    const username = req.session.username;
-
     try {
       await destroySession(req.session);
 
-      console.log(`Logout successfull for ${username}`);
-      res.send('Logout successfull')
+      console.log(`Logout successful`);
+      res.json({ message: 'Logout successful' })
 
     } catch (error) {
       res.status(500).send('Could not log out, please try again');
