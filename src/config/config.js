@@ -4,7 +4,9 @@ require('dotenv').config()
 const serverConfig = {
   cors: {
     // access from react app on http://localhost:3000
-    origin: 'http://localhost:3000'
+    origin: 'http://localhost:3000',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true
   },
   limiter: {
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -20,9 +22,9 @@ const serverConfig = {
   },
   sessionOptions: {
     secret: process.env.SESSION_KEY,
-    resave: true,
-    saveUninitialized: false,
-    cookie: { secure: process.env.NODE_ENV === "production", maxAge: 3600000 }
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: 'auto', maxAge: 3600000 }
   }
 }
 
