@@ -25,14 +25,14 @@ async function endRecording() {
   }
 }
 
-startStreamBtn.addEventListener('click', function () {
-  fetch('/start-stream')
-    .then(response => response.json())
-    .then(data => {
-      console.log(data)
-    })
-    .catch(error => console.error('Error:', error));
-});
+// startStreamBtn.addEventListener('click', function () {
+//   fetch('/start-stream')
+//     .then(response => response.json())
+//     .then(data => {
+//       console.log(data)
+//     })
+//     .catch(error => console.error('Error:', error));
+// });
 
 endStreamBtn.addEventListener('click', function () {
   fetch('/end-stream')

@@ -6,3 +6,5 @@ export const PAGES = {
     noPage: 'Srona nie istnieje',
   }
 }
+
+export const videoSource = 'http://localhost:9000/hls/stream.m3u8';

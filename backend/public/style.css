@@ -35,7 +35,7 @@ button {
   cursor: unset;
 }
 
-.recording-light {
+.recording-light-disabled {
   background-color: gray;
   color: white;
   border: none;
@@ -49,7 +49,7 @@ button {
   border-radius: 50%;
 }
 
-.blinking-button {
+.blinking-light {
   background-color: rgb(212, 0, 0);
   font-weight: bold;
   animation: blinkingAnimation 1s infinite;

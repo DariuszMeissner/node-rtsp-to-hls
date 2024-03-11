@@ -8,7 +8,7 @@ class Stream {
     clients: [],
     intervalId: null,
     streamfileStatus: {
-      found: null,
+      found: false,
       message: null
     }
   }

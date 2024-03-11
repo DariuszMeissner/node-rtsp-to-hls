@@ -2,6 +2,7 @@ export const createLoginSlice = (set) => ({
   message: null,
   status: null,
   isLoading: false,
+  isLoginOut: false,
   error: null,
   loginUser: async (username, password) => {
     set({ isLoading: true })
@@ -21,7 +22,7 @@ export const createLoginSlice = (set) => ({
     }
   },
   logoutUser: async () => {
-    set({ isLoading: true });
+    set({ isLoginOut: true });
     try {
       const response = await fetch('http://localhost:9000/logout', {
         method: 'POST',
@@ -32,21 +33,15 @@ export const createLoginSlice = (set) => ({
       });
 
       const data = await response.json();
-      set({ message: data.message, status: null, error: null, isLoading: false });
+      set({ message: data.message, status: null, error: null, isLoginOut: false });
     } catch (error) {
-      set({ error, isLoading: false });
+      set({ error, isLoginOut: false });
     }
   },
   getStatus: async () => {
     set({ isLoading: true });
     try {
-      const response = await fetch('http://localhost:9000/login', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
+      const response = await fetch('http://localhost:9000/login');
       const data = await response.json();
       set({ status: data.logged, error: null, isLoading: false });
     } catch (error) {

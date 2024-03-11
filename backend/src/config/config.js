@@ -23,8 +23,11 @@ const serverConfig = {
   sessionOptions: {
     secret: process.env.SESSION_KEY,
     resave: false,
-    saveUninitialized: true,
-    cookie: { secure: 'auto', maxAge: 3600000 }
+    saveUninitialized: false,
+    cookie: {
+      secure: 'auto',
+      maxAge: 3600000,
+    }
   }
 }
 

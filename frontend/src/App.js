@@ -5,7 +5,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import AdminPanel from './pages/AdminPanel';
 import NoPage from './pages/NoPage';
-import { PAGES } from './config/pages.config';
+import { PAGES } from './config/config';
 
 function App() {
   const [currentPath, setCurrentPath] = useState(document.location.pathname)

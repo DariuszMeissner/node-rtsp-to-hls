@@ -35,9 +35,7 @@ const statusStreamController = async (_, res) => {
     const streamInstance = Stream.getInstance();
     const status = await streamInstance.getStatus();
 
-    if (status) {
-      res.json(status)
-    }
+    res.json(status)
   } catch (error) {
     console.error('Failed to get stream status:', error);
     res.status(500).json({ error: 'Failed to get stream status' });

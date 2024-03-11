@@ -11,5 +11,13 @@ export default function useLoginData() {
     throw state.getStatus();
   }
 
-  return state;
+  const data = {
+    message: state.message,
+    status: state.status,
+    isLoading: state.isLoading,
+    isLoginOut: state.isLoginOut,
+    error: state.error,
+  }
+
+  return data;
 }

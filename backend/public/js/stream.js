@@ -6,104 +6,104 @@ evtSource.onmessage = (event) => {
   }
 };
 
-async function startRecording() {
-  try {
-    await fetch('/start-recording');
-    // eslint-disable-next-line no-undef
-    statusInfo.innerHTML = recording.state.on;
-    // eslint-disable-next-line no-undef
-    light.classList.add('blinking-button');
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
+// async function startRecording() {
+//   try {
+//     await fetch('/start-recording');
+//     // eslint-disable-next-line no-undef
+//     statusInfo.innerHTML = recording.state.on;
+//     // eslint-disable-next-line no-undef
+//     light.classList.add('blinking-button');
+//   } catch (error) {
+//     console.error('Error:', error);
+//   }
+// }
 
-function showStream() {
-  // eslint-disable-next-line no-undef
-  if (Hls.isSupported()) {
-    const video = document.getElementById('video');
-    const navigationPanel = document.querySelector('.navigation-panel');
-    const startStreamBtn = document.getElementById('startStream')
-    const endStreamBtn = document.getElementById('endStream')
+// function showStream() {
+//   // eslint-disable-next-line no-undef
+//   if (Hls.isSupported()) {
+//     const video = document.getElementById('video');
+//     const navigationPanel = document.querySelector('.navigation-panel');
+//     const startStreamBtn = document.getElementById('startStream')
+//     const endStreamBtn = document.getElementById('endStream')
 
-    if (navigationPanel) { navigationPanel.classList.remove('hide'); }
-    if (startStreamBtn) { startStreamBtn.classList.add('hide') }
-    if (endStreamBtn) { endStreamBtn.classList.remove('hide') }
-    video.classList.remove('hide');
+//     if (navigationPanel) { navigationPanel.classList.remove('hide'); }
+//     if (startStreamBtn) { startStreamBtn.classList.add('hide') }
+//     if (endStreamBtn) { endStreamBtn.classList.remove('hide') }
+//     video.classList.remove('hide');
 
-    // Check if Hls is supported
-    if (typeof Hls === 'undefined') {
-      console.error('Hls is not supported');
-    } else {
-      // Create a new Hls instance
-      // eslint-disable-next-line no-undef
-      const hls = new Hls();
+//     // Check if Hls is supported
+//     if (typeof Hls === 'undefined') {
+//       console.error('Hls is not supported');
+//     } else {
+//       // Create a new Hls instance
+//       // eslint-disable-next-line no-undef
+//       const hls = new Hls();
 
-      // Load the HLS stream source
-      hls.loadSource('/hls/stream.m3u8');
+//       // Load the HLS stream source
+//       hls.loadSource('/hls/stream.m3u8');
 
-      // Attach the HLS stream to the video element
-      hls.attachMedia(video);
-    }
+//       // Attach the HLS stream to the video element
+//       hls.attachMedia(video);
+//     }
 
-  }
-}
+//   }
+// }
 
-async function checkStreamStatus() {
-  let continuePolling = true;
-  const startStreamBtn = document.getElementById('startStream')
+// async function checkStreamStatus() {
+//   let continuePolling = true;
+//   const startStreamBtn = document.getElementById('startStream')
 
-  while (continuePolling) {
-    try {
-      const response = await fetch('/stream-status');
-      const data = await response.json();
-      const statusElement = document.getElementById('stream-status');
+//   while (continuePolling) {
+//     try {
+//       const response = await fetch('/stream-status');
+//       const data = await response.json();
+//       const statusElement = document.getElementById('stream-status');
 
-      if (data.found) {
-        statusElement.textContent = data.message;
-        continuePolling = false
+//       if (data.found) {
+//         statusElement.textContent = data.message;
+//         continuePolling = false
 
-        showStream()
-        startRecording()
-      } else if (data.found === false) {
-        statusElement.textContent = "Stream loading...";
-        if (startStreamBtn) startStreamBtn.classList.add('hide');
-      } else {
-        statusElement.textContent = "Stream offline.";
-      }
-    } catch (error) {
-      console.error('Error fetching stream status:', error);
-      document.getElementById('stream-status').textContent = "Error checking status.";
-      break; // Optionally stop polling in case of an error
-    }
+//         showStream()
+//         startRecording()
+//       } else if (data.found === false) {
+//         statusElement.textContent = "Stream loading...";
+//         if (startStreamBtn) startStreamBtn.classList.add('hide');
+//       } else {
+//         statusElement.textContent = "Stream offline.";
+//       }
+//     } catch (error) {
+//       console.error('Error fetching stream status:', error);
+//       document.getElementById('stream-status').textContent = "Error checking status.";
+//       break; // Optionally stop polling in case of an error
+//     }
 
-    // Wait for 2 seconds before next poll
-    await new Promise(resolve => setTimeout(resolve, 4000));
-  }
-}
+//     // Wait for 2 seconds before next poll
+//     await new Promise(resolve => setTimeout(resolve, 4000));
+//   }
+// }
 
-async function chechStreamOnStartPage() {
-  try {
-    const response = await fetch('/stream-status');
-    const data = await response.json();
+// async function chechStreamOnStartPage() {
+//   try {
+//     const response = await fetch('/stream-status');
+//     const data = await response.json();
 
-    if (data.found) {
-      showStream()
-      document.getElementById('stream-status').textContent = "Stream online"
-    } else {
-      document.getElementById('stream-status').textContent = "Stream offline"
-    }
-  } catch (error) {
-    console.error('Error fetching stream status:', error);
-    document.getElementById('stream-status').textContent = "Error checking status.";
-  }
-}
+//     if (data.found) {
+//       showStream()
+//       document.getElementById('stream-status').textContent = "Stream online"
+//     } else {
+//       document.getElementById('stream-status').textContent = "Stream offline"
+//     }
+//   } catch (error) {
+//     console.error('Error fetching stream status:', error);
+//     document.getElementById('stream-status').textContent = "Error checking status.";
+//   }
+// }
 
-document.addEventListener('DOMContentLoaded', () => {
-  chechStreamOnStartPage()
+// document.addEventListener('DOMContentLoaded', () => {
+//   chechStreamOnStartPage()
 
-  const startStreamBtn = document.getElementById('startStream')
-  if (startStreamBtn) {
-    startStreamBtn.addEventListener('click', checkStreamStatus)
-  }
-})
+//   const startStreamBtn = document.getElementById('startStream')
+//   if (startStreamBtn) {
+//     startStreamBtn.addEventListener('click', checkStreamStatus)
+//   }
+// })

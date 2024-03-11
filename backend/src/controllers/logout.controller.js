@@ -1,13 +1,14 @@
-// Helper function to destroy a session and return a promise
-const destroySession = (session) => {
-  return new Promise((resolve, reject) => {
-    session.destroy((err) => {
-      if (err) reject(err);
-      else resolve();
-    });
-  });
-};
+const util = require('util');
 
+const destroySession = async (session) => {
+  const destroy = util.promisify(session.destroy).bind(session);
+  try {
+    await destroy();
+  } catch (err) {
+    console.error('Error destroying session:', err);
+    throw err;
+  }
+};
 
 const logoutPostController = async (req, res) => {
   if (req.session) {
