@@ -1,5 +1,6 @@
 const express = require('express')
-const { loginPostController, loginGetController } = require('../controllers/login.controller')
+const isLoggedIn = require('../middlewares/loggedIn.middleware.js')
+const { loginPostController, loginSendFileController, loginStatusController } = require('../controllers/login.controller')
 
 class LoginRoutes {
   router = express.Router()
@@ -10,7 +11,8 @@ class LoginRoutes {
 
   intializeRoutes() {
     this.router.post('/login', loginPostController)
-    this.router.get('/login', loginGetController)
+    this.router.get('/login', isLoggedIn, loginSendFileController)
+    this.router.get('/login-status', loginStatusController)
   }
 }
 

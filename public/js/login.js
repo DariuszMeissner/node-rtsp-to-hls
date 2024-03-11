@@ -16,7 +16,7 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                window.location.href = data.redirect; // Redirect on successful login
+                window.location.href = '/panel'; // Redirect on successful login
             } else {
                 document.getElementById('message').textContent = data.message; // Show error message
             }

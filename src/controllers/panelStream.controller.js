@@ -1,6 +1,6 @@
-// const path = require('path')
+const path = require('path')
 
-const panelStream = (req, res) => {
+const getStatusStreamController = (req, res) => {
   // res.sendFile(path.join(__dirname, '../../public/pages', 'panel-admin.html'));
   if (req.session.user) {
     res.json({ logged: true })
@@ -9,4 +9,8 @@ const panelStream = (req, res) => {
   }
 }
 
-module.exports = panelStream 
+const panelSendFileController = (req, res) => {
+  res.sendFile(path.join(__dirname, '../../public/pages', 'panel-admin.html'));
+}
+
+module.exports = { getStatusStreamController, panelSendFileController }

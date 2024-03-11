@@ -3,8 +3,7 @@ require('dotenv').config()
 
 const serverConfig = {
   cors: {
-    // access from react app on http://localhost:3000
-    origin: 'http://localhost:3000',
+    origin: 'http://localhost:9000',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
   },
@@ -23,7 +22,7 @@ const serverConfig = {
   sessionOptions: {
     secret: process.env.SESSION_KEY,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: { secure: 'auto', maxAge: 3600000 }
   }
 }

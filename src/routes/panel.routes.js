@@ -1,8 +1,18 @@
 const express = require('express')
-const panelStream = require('../controllers/panelStream.controller.js')
+const isAuthenticated = require('../middlewares/auth.middleware')
+const { getStatusStreamController, panelSendFileController } = require('../controllers/panelStream.controller')
 
-const routerPanel = express.Router();
+class PanelRoutes {
+  router = express.Router()
 
-routerPanel.get('/panel', panelStream)
+  constructor() {
+    this.intializeRoutes()
+  }
 
-module.exports = routerPanel 
+  intializeRoutes() {
+    this.router.get('/panel-status', getStatusStreamController)
+    this.router.get('/panel', isAuthenticated, panelSendFileController)
+  }
+}
+
+module.exports = new PanelRoutes().router
