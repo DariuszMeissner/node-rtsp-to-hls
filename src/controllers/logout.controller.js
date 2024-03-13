@@ -15,7 +15,7 @@ const logoutPostController = async (req, res) => {
       await destroySession(req.session);
 
       console.log(`Logout successful`);
-      res.json({ message: 'Logout successful' })
+      res.json({ success: true, redirect: '/login' })
 
     } catch (error) {
       res.status(500).send('Could not log out, please try again');
