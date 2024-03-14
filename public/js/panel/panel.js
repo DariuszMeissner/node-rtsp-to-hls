@@ -10,6 +10,7 @@ export default class Panel {
     this.recordingStatus = document.getElementById('status-wrapper');
     this.video = document.getElementById('video');
     this.logoutButton = document.getElementById('logoutButton');
+    this.captions = document.getElementById('captions');
     this.initEventListeners();
   }
 
