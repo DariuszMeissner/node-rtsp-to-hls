@@ -16,7 +16,8 @@ const serverConfig = {
       "default-src": ["'self'"],
       "media-src": ["'self'", "blob:"],
       "script-src": ["'self'", "https://cdn.jsdelivr.net/npm/hls.js@latest", "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css", "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"],
-      "worker-src": ["'self'", "blob:"]
+      "worker-src": ["'self'", "blob:"],
+      "connectSrc": ["'self'", 'ws://localhost:9001']
     }
   },
   sessionOptions: {
