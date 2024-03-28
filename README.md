@@ -13,7 +13,7 @@ and displaying transciptions converted from video stream by Google Cloud Speech-
 
 - login page to manage our stream
 - by admin panel you can run stream and record stream
-- translating video from rtsp camera to hls file
+- translating live video from rtsp camera to hls file and sending on frontend
 - record stream on server
 - translating audio from live stream and displaying transciptions on video stream by Google Cloud Speech-to-text
 
