@@ -22,7 +22,6 @@ and displaying transciptions converted from video stream by Google Cloud Speech-
 - express.js
 - fluent-ffmpeg
 - @google-cloud/speech
-- socket.io
 - websocekt
 
 ### To Run
