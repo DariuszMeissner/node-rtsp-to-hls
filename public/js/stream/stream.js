@@ -4,13 +4,64 @@ import { insertText, showElement, hideElement } from '../utils/utils.js';
 export default class Stream extends Panel {
   constructor() {
     super();
+    this.btnFullscreen = document.getElementById('btn-fullscrean');
+    this.btnPlay = document.getElementById('btn-play');
+    this.btnStop = document.getElementById('btn-stop');
     this.chechStreamOnStartPage()
     this.initEventListeners();
+    this.initWebSocket();
   }
 
   initEventListeners() {
     if (this.startStreamBtn) {
       this.startStreamBtn.addEventListener('click', async () => this.checkStreamStatus());
+    }
+
+    if (this.btnFullscreen) {
+      this.btnFullscreen.addEventListener('click', () => this.toggleFullScreen());
+    }
+
+    if (this.btnPlay) {
+      this.btnPlay.addEventListener('click', () => this.playStopVideo());
+    }
+
+    if (this.btnStop) {
+      this.btnStop.addEventListener('click', () => this.playStopVideo());
+    }
+  }
+
+  initWebSocket() {
+    this.ws = new WebSocket('ws://localhost:9001/transcription');
+
+    this.ws.onerror = (error) => console.error('WebSocket Error:', error);
+    this.ws.onopen = () => console.log('WebSocket is open now.');
+    this.ws.onclose = () => console.log('WebSocket is closed now.');
+    this.ws.onmessage = (event) => {
+      const transcription = event.data;
+
+      if (transcription.size === 0) return
+      insertText(this.captions, transcription);
+    };
+  }
+
+  toggleFullScreen() {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      console.log('opened fullscreen');
+      this.videoWrapper.requestFullscreen();
+    }
+  }
+
+  playStopVideo() {
+    if (this.video.paused) {
+      this.video.play()
+      hideElement([this.btnPlay])
+      showElement([this.btnStop])
+    } else {
+      this.video.pause()
+      hideElement([this.btnStop])
+      showElement([this.btnPlay])
     }
   }
 
@@ -24,25 +75,25 @@ export default class Stream extends Panel {
   }
 
   showStream() {
+    if (typeof Hls === 'undefined') {
+      insertText(this.streamStatus, 'Hls is not supported');
+      return;
+    }
     // eslint-disable-next-line no-undef
     if (Hls.isSupported()) {
-      if (this.endStreamBtn && this.video) showElement([this.endStreamBtn, this.video]);
+      // eslint-disable-next-line no-undef
+      if (!this.hlsInstance) this.hlsInstance = new Hls();
+
+      if (this.endStreamBtn && this.videoWrapper) showElement([this.endStreamBtn, this.videoWrapper]);
       if (this.startStreamBtn) hideElement([this.startStreamBtn]);
 
-      if (typeof Hls === 'undefined') {
-        console.error('Hls is not supported');
-      } else {
-        if (!this.hlsInstance) {
-          // eslint-disable-next-line no-undef
-          this.hlsInstance = new Hls();
-        }
-        this.hlsInstance.attachMedia(this.video);
-        // eslint-disable-next-line no-undef
-        this.hlsInstance.on(Hls.Events.MEDIA_ATTACHED, () => {
-          this.hlsInstance.loadSource('/hls/stream.m3u8');
+      this.hlsInstance.attachMedia(this.video);
+      // eslint-disable-next-line no-undef
+      this.hlsInstance.on(Hls.Events.MEDIA_ATTACHED, () => this.hlsInstance.loadSource('/hls/stream.m3u8'));
 
-        });
-      }
+      this.video.play()
+      hideElement([this.btnPlay])
+      showElement([this.btnStop])
     }
   }
 
@@ -52,19 +103,19 @@ export default class Stream extends Panel {
     while (continuePolling) {
       try {
         const response = await fetch('/stream-status');
-        const data = await response.json();
+        const transcription = await response.json();
 
-        if (data.found) {
-          insertText(this.streamStatus, data.message);
+        if (transcription.found) {
+          insertText(this.streamStatus, transcription.message);
           continuePolling = false
 
           this.showStream()
           this.startRecording()
-        } else if (data.found === false) {
-          insertText(this.streamStatus, 'Stream loading...');
+        } else if (transcription.found === false) {
+          insertText(this.streamStatus, 'Ładowanie transmisji...');
           if (this.startStreamBtn) hideElement([this.startStreamBtn]);
         } else {
-          insertText(this.streamStatus, 'Stream offline.');
+          insertText(this.streamStatus, 'Transmisja offline');
         }
       } catch (error) {
         console.error('Error fetching stream status:', error);
@@ -73,23 +124,24 @@ export default class Stream extends Panel {
       }
 
       // Wait for 2 seconds before next poll
-      await new Promise(resolve => setTimeout(resolve, 4000));
+      await new Promise(resolve => setTimeout(resolve, 2000));
     }
   }
 
   async chechStreamOnStartPage() {
     try {
       const response = await fetch('/stream-status');
-      const data = await response.json();
+      const transcription = await response.json();
 
-      if (data.found) {
+      if (transcription.found) {
         this.showStream()
+        showElement([this.videoWrapper]);
+        insertText(this.streamStatus, 'Transmisja online');
         this.recordingStatus && showElement([this.recordingStatus])
-        showElement([this.video]);
-        insertText(this.streamStatus, 'Stream online');
-      } else {
-        insertText(this.streamStatus, 'Stream offline');
+        return;
       }
+
+      insertText(this.streamStatus, 'Transmisja offline');
     } catch (error) {
       console.error('Error fetching stream status:', error);
       insertText(this.streamStatus, 'Error checking status.');

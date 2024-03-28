@@ -2,6 +2,8 @@ const ffmpeg = require('fluent-ffmpeg')
 const { ffmpegConfig, streamDirectory } = require('./config/config.js')
 const { checkDirectoryExists, cleanDirectory, createDirectory, findFile } = require('./helpers/index.js')
 const { clearInterval } = require('timers')
+const Transcription = require('./Transcription.js')
+
 class Stream {
   data = {
     streamProcess: null,
@@ -11,8 +13,13 @@ class Stream {
       found: null,
       message: null
     }
+
   }
   static instance = null
+
+  constructor() {
+    this.transcription = new Transcription();
+  }
 
   static getInstance() {
     if (!Stream.instance) {
@@ -27,10 +34,6 @@ class Stream {
 
   setStreamProcess(processState) {
     this.data.streamProcess = processState;
-  }
-
-  addClient(client) {
-    this.data.clients.push(client)
   }
 
   getStream() {
@@ -64,13 +67,17 @@ class Stream {
       const fileStreamExists = await findFile(hlsOutputDir, hlsOutputFileName);
 
       if (fileStreamExists) {
+        console.log(`${hlsOutputFileName} found in public/hls`);
+
         clearInterval(this.data.intervalId);
-        this.updateStatus(true, 'Stream Online');
-        console.log(`${hlsOutputFileName} found in ${hlsOutputDir}`);
-      } else {
-        console.log(`${hlsOutputFileName} not found in ${hlsOutputDir}`);
-        this.updateStatus(false, 'stream loading');
+        this.updateStatus(true, 'Transmisja online');
+
+        this.transcription.captureAndTranscribeAudio(ffmpegConfig.rtspUrl);
+
+        return;
       }
+      console.log(`${hlsOutputFileName} not found in public/hls`);
+      this.updateStatus(false, 'Ładowanie tramsmisji');
     }, checkingTime);
   }
 
@@ -99,9 +106,10 @@ class Stream {
   }
 
   startStreamConversion() {
+    if (this.data.streamProcess) return;
+
     this.validateDirectory()
     this.processFFmpegStream(ffmpegConfig)
-
     this.data.streamProcess.run();
 
     return this.data.streamProcess;
@@ -109,14 +117,14 @@ class Stream {
 
   killStreamProcess() {
     if (this.data.streamProcess) {
+      this.transcription.destroy();
       this.data.streamProcess.kill('SIGINT');
       this.setStreamProcess(null)
       this.updateStatus(null, 'stream ended');
       this.clearInstance();
     }
+
   }
-
-
 }
 
 module.exports = Stream 

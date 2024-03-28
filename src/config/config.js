@@ -9,14 +9,15 @@ const serverConfig = {
   },
   limiter: {
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 1000 // limit each IP to 100 requests per windowMs
+    max: 1500
   },
   helmetOptions: {
     directives: {
       "default-src": ["'self'"],
       "media-src": ["'self'", "blob:"],
       "script-src": ["'self'", "https://cdn.jsdelivr.net/npm/hls.js@latest", "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css", "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"],
-      "worker-src": ["'self'", "blob:"]
+      "worker-src": ["'self'", "blob:"],
+      "connectSrc": ["'self'", 'ws://localhost:9001']
     }
   },
   sessionOptions: {

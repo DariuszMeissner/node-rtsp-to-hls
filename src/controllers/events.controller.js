@@ -27,7 +27,7 @@ const eventsStatusController = async (req, res) => {
     res.setHeader('Connection', 'keep-alive');
 
     const sendStatus = () => {
-      const data = { found: true, message: "Stream online" };
+      const data = { found: true, message: "Transmisja online" };
       res.json(data);
     };
 

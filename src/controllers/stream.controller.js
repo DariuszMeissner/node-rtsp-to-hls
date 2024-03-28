@@ -20,7 +20,7 @@ const endStreamController = async (_, res) => {
     const recorderInstance = Recorder.getInstanceRecorder();
 
     streamInstance.killStreamProcess();
-    if (recorderInstance) recorderInstance.endRecording();
+    recorderInstance.endRecording();
 
     const status = streamInstance.getStatus();
     res.json(status);

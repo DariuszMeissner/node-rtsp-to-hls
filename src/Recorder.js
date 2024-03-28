@@ -36,7 +36,8 @@ class Recorder {
 
   getOutputFilePath(directoryPath) {
     const timestamp = Date.now();
-    const fileName = `posiedzenie-${timestamp}.mp4`;
+    const dateISO = new Date(timestamp).toUTCString().replace(/ |:|,/g, '-');
+    const fileName = `posiedzenie-${dateISO}.mp4`;
 
     return `${directoryPath}/${fileName}`
   }
