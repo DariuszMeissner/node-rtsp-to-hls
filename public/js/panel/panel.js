@@ -9,8 +9,10 @@ export default class Panel {
     this.streamStatus = document.getElementById('stream-status');
     this.recordingStatus = document.getElementById('status-wrapper');
     this.video = document.getElementById('video');
+    this.videoWrapper = document.getElementById('video-wrapper');
     this.logoutButton = document.getElementById('logoutButton');
     this.captions = document.getElementById('captions');
+    this.queue = []
     this.initEventListeners();
   }
 
@@ -43,9 +45,9 @@ export default class Panel {
     this.endStreamBtn.addEventListener('click', async () => {
       try {
         await fetch('/end-stream')
-        hideElement([this.video, this.endStreamBtn, this.recordingStatus])
+        hideElement([this.videoWrapper, this.endStreamBtn, this.recordingStatus])
         showElement([this.startStreamBtn])
-        insertText(this.streamStatus, 'Stream offline')
+        insertText(this.streamStatus, 'Transmisja offline')
 
         this.clearInstance()
       } catch (error) {
