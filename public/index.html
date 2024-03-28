@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Stream z posiedzenia rady</title>
+  <title>Transmisja Sesji Rady Powiatu Brzeziny</title>
   <script src="//cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -18,14 +18,47 @@
 </head>
 
 <body>
-  <main>
-    <h2 id="stream-status">Stream Offline</h2>
+  <header>
+    <h1>Transmisja Sesji Rady Powiatu Brzeziny</h1>
+  </header>
 
-    <video id="video" class="hide" controls>
-      <source src="hls/stream.m3u8" type="application/x-mpegURL">
-      Your browser does not support the video tag.
-    </video>
-    <div id="captions"></div>
+  <main>
+    <h2 id="stream-status">Transmisja offline</h2>
+
+    <div id="video-wrapper" class="hide">
+      <button id="btn-fullscrean" class="btn">
+        <svg version="1.1" viewBox="0 0 36 36">
+          <path d="m 10,16 2,0 0,-4 4,0 0,-2 L 10,10 l 0,6 0,0 z">
+          </path>
+          <path d="m 20,10 0,2 4,0 0,4 2,0 L 26,10 l -6,0 0,0 z">
+          </path>
+          <path d="m 24,24 -4,0 0,2 L 26,26 l 0,-6 -2,0 0,4 0,0 z">
+          </path>
+          <path d="M 12,20 10,20 10,26 l 6,0 0,-2 -4,0 0,-4 0,0 z">
+          </path>
+        </svg>
+      </button>
+
+      <button id="btn-play" class="btn">
+        <svg viewBox="0 0 26 26">
+          <polygon
+            points="9.33 6.69 9.33 19.39 19.3 13.04 9.33 6.69" />
+        </svg>
+      </button>
+
+      <button id="btn-stop" class="btn hide">
+        <svg viewBox="0 0 26 26">
+          <path
+            d="M3.5 5A1.5 1.5 0 0 1 5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5zM5 4.5a.5.5 0 0 0-.5.5v6a.5.5 0 0 0 .5.5h6a.5.5 0 0 0 .5-.5V5a.5.5 0 0 0-.5-.5H5z" />
+        </svg>
+      </button>
+
+      <video id="video">
+        <source src="hls/stream.m3u8" type="application/x-mpegURL">
+        Your browser does not support the video tag.
+      </video>
+      <div id="captions"></div>
+    </div>
   </main>
 </body>
 <script type="module" src="js/stream/index.js"></script>
