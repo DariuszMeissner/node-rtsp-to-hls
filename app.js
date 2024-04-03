@@ -19,12 +19,12 @@ class AppServer {
   }
 
   init() {
-    this.serverWebSocket.on('upgrade', (request, socket, head) => {
-      this.wss.handleUpgrade(request, socket, head, ws => {
-        this.wss.emit('connection', ws, request);
-      });
-    });
+    this.handleWsUpgrade();
+    this.handleTranscriptionChange();
+    this.handleServers();
+  }
 
+  handleTranscriptionChange() {
     this.wss.on('connection', ws => {
       const stream = Stream.getInstance().transcription;
 
@@ -43,7 +43,9 @@ class AppServer {
 
       console.log('WebSocket connection opened', ws.url);
     });
+  }
 
+  handleServers() {
     this.app.listen(this.PORT, "localhost", () => console.log(`Server running at http://localhost:${this.PORT}`))
       .on('error', (err) => {
         if (err.code === "EADDRINUSE") {
@@ -56,7 +58,14 @@ class AppServer {
     this.serverWebSocket.listen(9001, () => {
       console.log('Server WebSocket started on port 9001');
     });
+  }
 
+  handleWsUpgrade() {
+    this.serverWebSocket.on('upgrade', (request, socket, head) => {
+      this.wss.handleUpgrade(request, socket, head, ws => {
+        this.wss.emit('connection', ws, request);
+      });
+    });
   }
 
 }

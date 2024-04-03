@@ -7,12 +7,12 @@ body {
 main,
 header {
   margin: 0 auto;
-  width: 640px;
+  max-width: 640px;
 }
 
 section {
   margin: 0 auto;
-  width: fit-content;
+  max-width: fit-content;
 }
 
 button {
