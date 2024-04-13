@@ -13,25 +13,14 @@ export default class Stream extends Panel {
   }
 
   initEventListeners() {
-    if (this.startStreamBtn) {
-      this.startStreamBtn.addEventListener('click', async () => this.checkStreamStatus());
-    }
-
-    if (this.btnFullscreen) {
-      this.btnFullscreen.addEventListener('click', () => this.toggleFullScreen());
-    }
-
-    if (this.btnPlay) {
-      this.btnPlay.addEventListener('click', () => this.playStopVideo());
-    }
-
-    if (this.btnStop) {
-      this.btnStop.addEventListener('click', () => this.playStopVideo());
-    }
+    if (this.startStreamBtn) this.startStreamBtn.addEventListener('click', async () => this.checkStreamStatus());
+    if (this.btnFullscreen) this.btnFullscreen.addEventListener('click', () => this.toggleFullScreen());
+    if (this.btnPlay) this.btnPlay.addEventListener('click', () => this.playStopVideo());
+    if (this.btnStop) this.btnStop.addEventListener('click', () => this.playStopVideo());
   }
 
   initWebSocket() {
-    this.ws = new WebSocket('ws://localhost:9001/transcription');
+    this.ws = new WebSocket('ws://localhost:9000');
 
     this.ws.onerror = (error) => console.error('WebSocket Error:', error);
     this.ws.onopen = () => console.log('WebSocket is open now.');
@@ -40,6 +29,7 @@ export default class Stream extends Panel {
       const transcription = event.data;
 
       if (transcription.size === 0) return
+
       insertText(this.captions, transcription);
     };
   }
