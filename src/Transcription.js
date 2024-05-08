@@ -23,8 +23,6 @@ class Transcription {
   }
 
   emitTranscription(data) {
-    // const maxDisplayingWords = 20;
-
     const transcription = data.results
       .map(result => result.alternatives[0].transcript)
       .join('\n');
