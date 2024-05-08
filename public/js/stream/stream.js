@@ -38,7 +38,6 @@ export default class Stream extends Panel {
     if (document.fullscreenElement) {
       document.exitFullscreen();
     } else {
-      console.log('opened fullscreen');
       this.videoWrapper.requestFullscreen();
     }
   }
@@ -81,9 +80,8 @@ export default class Stream extends Panel {
       // eslint-disable-next-line no-undef
       this.hlsInstance.on(Hls.Events.MEDIA_ATTACHED, () => this.hlsInstance.loadSource('/hls/stream.m3u8'));
 
-      this.video.play()
-      hideElement([this.btnPlay])
-      showElement([this.btnStop])
+      hideElement([this.btnStop])
+      showElement([this.btnPlay])
     }
   }
 
