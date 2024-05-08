@@ -29,6 +29,12 @@ h2 {
   font-weight: 500;
 }
 
+video {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
 #loginForm input {
   width: 200px;
 }
