@@ -83,6 +83,7 @@ class Stream {
 
   processFFmpegStream(config) {
     const streamProcess = ffmpeg(config.rtspUrl)
+      .inputOptions(['-rtsp_transport tcp'])
       .addOptions(config.ffmpegOptions)
       .videoCodec(config.codecs.video)
       .audioCodec(config.codecs.audio)
@@ -97,10 +98,11 @@ class Stream {
         clearInterval(this.data.intervalId)
         console.log('Signal not found, stream ended');
       })
-      .on('start', () => {
-        console.log('Stream started');
+      .on('start', commandLine => {
+        console.log('Stream started', commandLine);
         this.checkFileStreamExists(config.outputDirectory, config.outputFile)
       });
+
 
     this.setStreamProcess(streamProcess);
   }

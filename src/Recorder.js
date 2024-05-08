@@ -35,7 +35,7 @@ class Recorder {
   }
 
   getOutputFilePath(directoryPath) {
-    const timestamp = Date.now();
+    const timestamp = Date.now() + (60 * 60000);
     const dateISO = new Date(timestamp).toUTCString().replace(/ |:|,/g, '-');
     const fileName = `posiedzenie-${dateISO}.mp4`;
 
@@ -46,6 +46,7 @@ class Recorder {
     const outputPath = this.getOutputFilePath(config.output)
 
     const recorderProcess = ffmpeg(config.rtspUrl)
+      .inputOptions(['-rtsp_transport tcp'])
       .output(outputPath)
       .size(config.size)
       .format(config.format)
