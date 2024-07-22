@@ -1,32 +1,31 @@
-const { Transform } = require('stream');
-const speech = require('@google-cloud/speech');
 const ffmpeg = require('fluent-ffmpeg');
-const EventEmitter = require('events');
+const { Transform } = require('stream');
+const { EventEmitter } = require('events');
+const { SpeechClient } = require('@google-cloud/speech');
 
 class Transcription {
-
   constructor() {
-    this.client = new speech.SpeechClient();
+    this.client = new SpeechClient();
     this.request = {
       config: {
         encoding: 'LINEAR16',
         sampleRateHertz: 44100,
         languageCode: 'pl-PL',
+        timeout: 60000,
       },
-      interimResults: true
-    }
-    this.ffmpegProcessTranscription = null
-    this.transcription = 'none'
+      interimResults: true,
+    };
+    this.ffmpegProcessTranscription = null;
+    this.transcription = 'none';
     this.events = new EventEmitter();
-    this.queue = []
-    this.isEmitting = false
+    this.queue = [];
+    this.isEmitting = false;
   }
 
   emitTranscription(data) {
-    const transcription = data.results
-      .map(result => result.alternatives[0].transcript)
-      .join('\n');
+    // const maxDisplayingWords = 20;
 
+    const transcription = data.results.map((result) => result.alternatives[0].transcript).join('\n');
 
     this.transcription = transcription;
     this.queue.push(this.transcription);
@@ -37,7 +36,7 @@ class Transcription {
   }
 
   emitNextTranscription() {
-    const delayCaption = 100
+    const delayCaption = 100;
 
     if (this.queue.length === 0) {
       this.isEmitting = false;
@@ -52,7 +51,6 @@ class Transcription {
     setTimeout(() => this.emitNextTranscription(), delayCaption);
   }
 
-
   captureAndTranscribeAudio(streamUrl) {
     let transcribeStream;
     let streamDuration = 0;
@@ -62,11 +60,18 @@ class Transcription {
       return;
     }
 
-
     const startTranscribeStream = () => {
-      transcribeStream = this.client.streamingRecognize(this.request)
-        .on('error', error => console.error('Error during transcription:', error))
-        .on('data', data => this.emitTranscription(data));
+      transcribeStream = this.client
+        .streamingRecognize(this.request)
+        .on('error', (error) => {
+          if (error.details && error.details.code === -84164) {
+            console.log('Internal server error, retrying transcription...');
+            startTranscribeStream();
+          } else {
+            console.error('Error during transcription:', error);
+          }
+        })
+        .on('data', (data) => this.emitTranscription(data));
     };
 
     startTranscribeStream();
@@ -75,40 +80,43 @@ class Transcription {
       .outputFormat('wav')
       .audioChannels(1)
       .audioFrequency(44100)
-      .output(new Transform({
-        transform(chunk, encoding, callback) {
-          const chunkDuration = chunk.length / 44100; // Calculate the duration of the chunk in seconds
-          streamDuration += chunkDuration;
+      .output(
+        new Transform({
+          transform(chunk, encoding, callback) {
+            const chunkDuration = chunk.length / 44100; // Calculate the duration of the chunk in seconds
+            streamDuration += chunkDuration;
 
-          if (streamDuration > 300) { // If the stream duration exceeds 300 seconds
-            transcribeStream.end(); // End the current stream
-            startTranscribeStream(); // Start a new stream
-            streamDuration = chunkDuration; // Reset the stream duration
-          }
+            if (streamDuration > 300) {
+              // If the stream duration exceeds 300 seconds
+              transcribeStream.end(); // End the current stream
+              startTranscribeStream(); // Start a new stream
+              streamDuration = chunkDuration; // Reset the stream duration
+            }
 
-          if (!transcribeStream.destroyed) {
-            transcribeStream.write(chunk);
-          }
+            if (!transcribeStream.destroyed) {
+              transcribeStream.write(chunk);
+            }
 
-          callback();
-        },
-        flush(callback) {
-          console.log('Ending transcribeStream');
-          transcribeStream.end();
-          callback();
-        },
-      }))
+            callback();
+          },
+          flush(callback) {
+            console.log('Ending transcribeStream');
+            transcribeStream.end();
+            callback();
+          },
+        })
+      )
       .on('start', () => console.log('Transcription stream started'))
       .on('end', () => console.log('Transcription ffmpeg process ended'))
-      .on('error', error => console.error('Error during transcription ffmpeg process:', error))
+      .on('error', (error) => console.error('Error during transcription ffmpeg process:', error))
       .run();
   }
 
   destroy() {
     if (this.ffmpegProcessTranscription) {
       console.log('Destroyed transcription process');
-      this.ffmpegProcessTranscription.kill()
-      this.ffmpegProcessTranscription = null
+      this.ffmpegProcessTranscription.kill();
+      this.ffmpegProcessTranscription = null;
     }
   }
 }
