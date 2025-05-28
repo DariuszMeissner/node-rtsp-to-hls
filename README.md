@@ -31,9 +31,9 @@ RTSP_URL= your rtsp url 'rtsp://<login>:<password>!@<ip>:<port>' or any other so
 SESSION_KEY='your session key'<br>
 USER_LOGIN='your login'<br>
 USER_PASSWORD='your password'<br>
-PORT='server port'<br>
 GOOGLE_APPLICATION_CREDENTIALS='your path to key from gooogle-cloud/speech to text API'<br>
 
 Go to the main root of project<br>
 install dependencies: **npm install**<br>
-to run app, enter in terminal: **node app.js**
+run server, enter in terminal: **node app.js**
+and run app, in browser:**http:locallhost:3000**

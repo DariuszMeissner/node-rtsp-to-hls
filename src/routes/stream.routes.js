@@ -1,19 +1,22 @@
-const express = require('express')
-const { startStreamController, endStreamController, statusStreamController } = require('../controllers/stream.controller');
-
+const express = require('express');
+const {
+  startStreamController,
+  endStreamController,
+  statusStreamController,
+} = require('../controllers/stream.controller');
 
 class StreamRoutes {
-  router = express.Router()
+  router = express.Router();
 
   constructor() {
-    this.intializeRoutes()
+    this.intializeRoutes();
   }
 
   intializeRoutes() {
-    this.router.get('/start-stream', startStreamController)
-    this.router.get('/end-stream', endStreamController)
-    this.router.get('/stream-status', statusStreamController)
+    this.router.post('/start-stream', startStreamController);
+    this.router.get('/end-stream', endStreamController);
+    this.router.get('/stream-status', statusStreamController);
   }
 }
 
-module.exports = new StreamRoutes().router
+module.exports = new StreamRoutes().router;

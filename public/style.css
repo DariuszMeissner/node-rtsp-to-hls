@@ -1,7 +1,8 @@
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
-    Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-  margin: 16px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+    'Helvetica Neue', sans-serif;
+  margin: 0 auto;
+  margin-top: 0;
 }
 
 main,
@@ -41,11 +42,6 @@ video {
 
 .hide {
   display: none !important;
-}
-
-#status-wrapper {
-  display: flex;
-  align-items: center;
 }
 
 .btn:disabled {
@@ -101,6 +97,12 @@ video {
   width: 54px;
 }
 
+main {
+  margin-top: 2rem;
+  padding: 1rem;
+  padding-top: 0;
+}
+
 #btn-fullscrean:focus {
   outline: none;
 }
@@ -145,4 +147,61 @@ video {
     width: 100%;
     height: 100%;
   }
+}
+
+/* camera checkbox styling */
+/* The container */
+.container {
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1/1;
+  width: 150px;
+  max-height: 100%;
+  background-color: grey;
+  border: none;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.container input:checked ~ .checkmark {
+  background-color: #2196f3;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: '';
+  position: absolute;
+  display: none;
+}
+
+/* Style the indicator (dot/circle) */
+.container .checkmark:after {
+  top: 9px;
+  left: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
 }

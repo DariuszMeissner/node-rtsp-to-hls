@@ -8,16 +8,17 @@ const INFINITY_LISTENERS = 0;
 
 class AppServer {
   constructor() {
-    this.PORT = 443;
+    this.PORT = 3000; // Use a non-privileged port like 8080
     this.app = express();
     this.server = new Server(this.app);
-    this.serverInstance = this.serverInstance = this.app.listen(this.PORT, (error) => {
+    this.serverInstance = this.app.listen(this.PORT, (error) => {
       if (error) {
         console.error(`Server failed to start: ${error}`);
       } else {
-        console.log('--------Server running----------');
+        console.log(`--------Server running at http://localhost:${this.PORT} ----------`);
       }
     });
+
     this.wss = new WebSocket.Server({ server: this.serverInstance });
     this.currentTranscription = '';
     this.lastWordIndex = 0;

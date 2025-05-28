@@ -1,8 +1,8 @@
-const ffmpeg = require('fluent-ffmpeg')
-const { ffmpegConfig, streamDirectory } = require('./config/config.js')
-const { checkDirectoryExists, cleanDirectory, createDirectory, findFile } = require('./helpers/index.js')
-const { clearInterval } = require('timers')
-const Transcription = require('./Transcription.js')
+const ffmpeg = require('fluent-ffmpeg');
+const { ffmpegConfig, streamDirectory } = require('./config/config.js');
+const { checkDirectoryExists, cleanDirectory, createDirectory, findFile } = require('./helpers/index.js');
+const { clearInterval } = require('timers');
+const Transcription = require('./Transcription.js');
 
 class Stream {
   data = {
@@ -11,11 +11,10 @@ class Stream {
     intervalId: null,
     streamfileStatus: {
       found: null,
-      message: null
-    }
-
-  }
-  static instance = null
+      message: null,
+    },
+  };
+  static instance = null;
 
   constructor() {
     this.transcription = new Transcription();
@@ -63,6 +62,13 @@ class Stream {
   checkFileStreamExists(hlsOutputDir, hlsOutputFileName) {
     const checkingTime = 1000;
 
+    // Check if codecs are defined in the configuration
+    if (!ffmpegConfig.codecs || !ffmpegConfig.codecs.video || !ffmpegConfig.codecs.audio) {
+      console.error('Error: Missing required codecs in ffmpeg configuration.');
+      this.updateStatus(false, 'Codec error, stream cannot start');
+      return;
+    }
+
     this.data.intervalId = setInterval(async () => {
       const fileStreamExists = await findFile(hlsOutputDir, hlsOutputFileName);
 
@@ -76,13 +82,16 @@ class Stream {
 
         return;
       }
+
       console.log(`${hlsOutputFileName} not found in public/hls`);
       this.updateStatus(false, 'Ładowanie tramsmisji');
     }, checkingTime);
   }
 
-  processFFmpegStream(config) {
-    const streamProcess = ffmpeg(config.rtspUrl)
+  processFFmpegStream(config, camera) {
+    const camUrl = camera == 'camera-first' ? config.rtspUrl : config.rtspUrlSecond;
+
+    const streamProcess = ffmpeg(camUrl)
       .inputOptions(['-rtsp_transport tcp'])
       .addOptions(config.ffmpegOptions)
       .videoCodec(config.codecs.video)
@@ -93,25 +102,24 @@ class Stream {
         streamProcess.kill('SIGINT');
       })
       .on('error', (err) => {
-        console.error(err);
+        console.error('error:', err);
         streamProcess.kill('SIGINT');
-        clearInterval(this.data.intervalId)
-        console.log('Signal not found, stream ended');
+        clearInterval(this.data.intervalId);
+        console.log('Stream ended due to error:', err.message);
       })
-      .on('start', commandLine => {
+      .on('start', (commandLine) => {
         console.log('Stream started', commandLine);
-        this.checkFileStreamExists(config.outputDirectory, config.outputFile)
+        this.checkFileStreamExists(config.outputDirectory, config.outputFile);
       });
-
 
     this.setStreamProcess(streamProcess);
   }
 
-  startStreamConversion() {
+  startStreamConversion(camera) {
     if (this.data.streamProcess) return;
 
-    this.validateDirectory()
-    this.processFFmpegStream(ffmpegConfig)
+    this.validateDirectory();
+    this.processFFmpegStream(ffmpegConfig, camera);
     this.data.streamProcess.run();
 
     return this.data.streamProcess;
@@ -121,12 +129,11 @@ class Stream {
     if (this.data.streamProcess) {
       this.transcription.destroy();
       this.data.streamProcess.kill('SIGINT');
-      this.setStreamProcess(null)
+      this.setStreamProcess(null);
       this.updateStatus(null, 'stream ended');
       this.clearInstance();
     }
-
   }
 }
 
-module.exports = Stream 
+module.exports = Stream;

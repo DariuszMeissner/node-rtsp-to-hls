@@ -1,18 +1,22 @@
-const express = require('express')
-const { startRecordingController, endRecordingController, statusRecordingController } = require('../controllers/recorder.controller')
+const express = require('express');
+const {
+  startRecordingController,
+  endRecordingController,
+  statusRecordingController,
+} = require('../controllers/recorder.controller');
 
 class RecorderRoutes {
-  router = express.Router()
+  router = express.Router();
 
   constructor() {
-    this.intializeRoutes()
+    this.intializeRoutes();
   }
 
   intializeRoutes() {
-    this.router.get('/start-recording', startRecordingController)
-    this.router.get('/end-recording', endRecordingController)
-    this.router.get('/recording-status', statusRecordingController)
+    this.router.post('/start-recording', startRecordingController);
+    this.router.get('/end-recording', endRecordingController);
+    this.router.get('/recording-status', statusRecordingController);
   }
 }
 
-module.exports = new RecorderRoutes().router
+module.exports = new RecorderRoutes().router;

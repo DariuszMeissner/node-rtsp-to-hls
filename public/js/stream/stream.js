@@ -1,5 +1,5 @@
 import Panel from '../panel/panel.js';
-import { insertText, showElement, hideElement } from '../utils/utils.js';
+import { insertText, showElement, hideElement, CAMERA_NAME } from '../utils/utils.js';
 
 export default class Stream extends Panel {
   constructor() {
@@ -7,9 +7,13 @@ export default class Stream extends Panel {
     this.btnFullscreen = document.getElementById('btn-fullscrean');
     this.btnPlay = document.getElementById('btn-play');
     this.btnStop = document.getElementById('btn-stop');
-    this.chechStreamOnStartPage()
+    this.checkStreamOnStartPage();
     this.initEventListeners();
     this.initWebSocket();
+  }
+
+  get radioValueStorage() {
+    return localStorage.getItem('radioValue');
   }
 
   initEventListeners() {
@@ -20,7 +24,7 @@ export default class Stream extends Panel {
   }
 
   initWebSocket() {
-    this.ws = new WebSocket('ws://localhost:9000');
+    this.ws = new WebSocket('ws://localhost:3000');
 
     this.ws.onerror = (error) => console.error('WebSocket Error:', error);
     this.ws.onopen = () => console.log('WebSocket is open now.');
@@ -28,7 +32,7 @@ export default class Stream extends Panel {
     this.ws.onmessage = (event) => {
       const transcription = event.data;
 
-      if (transcription.size === 0) return
+      if (transcription.size === 0) return;
 
       insertText(this.captions, transcription);
     };
@@ -44,19 +48,25 @@ export default class Stream extends Panel {
 
   playStopVideo() {
     if (this.video.paused) {
-      this.video.play()
-      hideElement([this.btnPlay])
-      showElement([this.btnStop])
+      this.video.play();
+      hideElement([this.btnPlay]);
+      showElement([this.btnStop]);
     } else {
-      this.video.pause()
-      hideElement([this.btnStop])
-      showElement([this.btnPlay])
+      this.video.pause();
+      hideElement([this.btnStop]);
+      showElement([this.btnPlay]);
     }
   }
 
   async startRecording() {
     try {
-      await fetch('/start-recording');
+      await fetch('/start-recording', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ value: this.radioValueStorage }),
+      });
       showElement([this.recordingStatus]);
     } catch (error) {
       console.error('Error:', error);
@@ -73,15 +83,20 @@ export default class Stream extends Panel {
       // eslint-disable-next-line no-undef
       if (!this.hlsInstance) this.hlsInstance = new Hls();
 
-      if (this.endStreamBtn && this.videoWrapper) showElement([this.endStreamBtn, this.videoWrapper]);
-      if (this.startStreamBtn) hideElement([this.startStreamBtn]);
+      if (this.endStreamBtn && this.videoWrapper) {
+        showElement([this.endStreamBtn, this.videoWrapper]);
+      }
+
+      if (this.startStreamBtn) {
+        hideElement([this.startStreamBtn]);
+      }
 
       this.hlsInstance.attachMedia(this.video);
       // eslint-disable-next-line no-undef
       this.hlsInstance.on(Hls.Events.MEDIA_ATTACHED, () => this.hlsInstance.loadSource('/hls/stream.m3u8'));
 
-      hideElement([this.btnStop])
-      showElement([this.btnPlay])
+      hideElement([this.btnStop]);
+      showElement([this.btnPlay]);
     }
   }
 
@@ -95,10 +110,11 @@ export default class Stream extends Panel {
 
         if (transcription.found) {
           insertText(this.streamStatus, transcription.message);
-          continuePolling = false
 
-          this.showStream()
-          this.startRecording()
+          continuePolling = false;
+
+          this.showStream();
+          this.startRecording();
         } else if (transcription.found === false) {
           insertText(this.streamStatus, 'Ładowanie transmisji...');
           if (this.startStreamBtn) hideElement([this.startStreamBtn]);
@@ -112,20 +128,25 @@ export default class Stream extends Panel {
       }
 
       // Wait for 2 seconds before next poll
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
     }
   }
 
-  async chechStreamOnStartPage() {
+  async checkStreamOnStartPage() {
     try {
       const response = await fetch('/stream-status');
       const transcription = await response.json();
 
       if (transcription.found) {
-        this.showStream()
+        this.showStream();
+        insertText(
+          this.cameraName,
+          this.radioValueStorage == 'camera-first' ? CAMERA_NAME.camera1 : CAMERA_NAME.camera2
+        );
+        hideElement([this.chooseCameraBtn]);
         showElement([this.videoWrapper]);
         insertText(this.streamStatus, 'Transmisja online');
-        this.recordingStatus && showElement([this.recordingStatus])
+        this.recordingStatus && showElement([this.recordingStatus]);
         return;
       }
 
