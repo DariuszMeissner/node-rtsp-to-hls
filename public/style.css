@@ -169,7 +169,8 @@ main {
 
 /* Create a custom radio button */
 .checkmark {
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   aspect-ratio: 1/1;
@@ -177,6 +178,16 @@ main {
   max-height: 100%;
   background-color: grey;
   border: none;
+}
+
+.checkmark div:nth-child(1) {
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.checkmark div:nth-child(2) {
+  font-size: 18px;
 }
 
 /* On mouse-over, add a grey background color */

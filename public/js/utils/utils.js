@@ -4,6 +4,6 @@ export const showElement = (elements) => elements.forEach((element) => element.c
 export const insertText = (element, text) => (element.innerHTML = text);
 
 export const CAMERA_NAME = {
-  camera1: 'Kamera 1',
-  camera2: 'Kamera 2',
+  camera1: 'Kamera 1 - Urząd Miasta',
+  camera2: 'Kamera 2 - Sala Kilińskiego',
 };
