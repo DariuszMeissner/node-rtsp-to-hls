@@ -139,11 +139,16 @@ export default class Stream extends Panel {
 
       if (transcription.found) {
         this.showStream();
-        insertText(
-          this.cameraName,
-          this.radioValueStorage == 'camera-first' ? CAMERA_NAME.camera1 : CAMERA_NAME.camera2
-        );
-        hideElement([this.chooseCameraBtn]);
+
+        if (this.cameraName && this.radioValueStorage) {
+          const cameraTxt = this.radioValueStorage == 'camera-first' ? CAMERA_NAME.camera1 : CAMERA_NAME.camera2;
+          insertText(this.cameraName, cameraTxt);
+        }
+
+        if (this.chooseCameraBtn) {
+          hideElement([this.chooseCameraBtn]);
+        }
+
         showElement([this.videoWrapper]);
         insertText(this.streamStatus, 'Transmisja online');
         this.recordingStatus && showElement([this.recordingStatus]);
