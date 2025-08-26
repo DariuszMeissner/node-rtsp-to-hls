@@ -7,7 +7,7 @@ and displaying transciptions converted from video stream by Google Cloud Speech-
 
 - '/login' - login to admin panel
 - '/panel' - manage our stream
-- '/' - main route for all clients to see stream
+- '/app' - main route for all clients to see stream
 
 ### Functions
 
@@ -36,4 +36,4 @@ GOOGLE_APPLICATION_CREDENTIALS='your path to key from gooogle-cloud/speech to te
 Go to the main root of project<br>
 install dependencies: **npm install**<br>
 run server, enter in terminal: **node app.js**
-and run app, in browser:**http:locallhost:3000**
+and run app, in browser:**http:locallhost:3000/app**
