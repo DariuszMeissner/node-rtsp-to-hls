@@ -7,9 +7,6 @@ const startStreamController = async (req, res) => {
 
     const streamInstance = Stream.getInstance();
     streamInstance.startStreamConversion(payload.value);
-
-    const status = streamInstance.getStatus();
-    res.json(status);
   } catch (error) {
     console.error('Failed to start stream:', error);
     res.status(500).json({ error: 'Failed to start stream' });

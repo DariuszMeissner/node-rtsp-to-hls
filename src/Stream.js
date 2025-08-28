@@ -97,19 +97,19 @@ class Stream {
       .videoCodec(config.codecs.video)
       .audioCodec(config.codecs.audio)
       .output(config.output)
+      .on('start', (commandLine) => {
+        this.checkFileStreamExists(config.outputDirectory, config.outputFile);
+        console.log('Stream started', commandLine);
+      })
       .on('end', () => {
+        this.killStreamProcess();
         console.log('Stream conversion ended.');
-        streamProcess.kill('SIGINT');
       })
       .on('error', (err) => {
-        console.error('error:', err);
-        streamProcess.kill('SIGINT');
+        this.updateStatus(false, 'Problem z odbiorem sygnału');
+        this.killStreamProcess();
         clearInterval(this.data.intervalId);
         console.log('Stream ended due to error:', err.message);
-      })
-      .on('start', (commandLine) => {
-        console.log('Stream started', commandLine);
-        this.checkFileStreamExists(config.outputDirectory, config.outputFile);
       });
 
     this.setStreamProcess(streamProcess);
@@ -130,7 +130,7 @@ class Stream {
       this.transcription.destroy();
       this.data.streamProcess.kill('SIGINT');
       this.setStreamProcess(null);
-      this.updateStatus(null, 'stream ended');
+      this.updateStatus(null, null);
       this.clearInstance();
     }
   }
